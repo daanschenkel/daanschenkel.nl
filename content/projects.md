@@ -2,6 +2,8 @@
 title="Projects"
 +++
 
+> **_NOTE:_** This is kind of a resume, but not really. You can find my resume [here](https://daanschenkel.nl/resume.pdf)
+
 # Hires
 
 ### Talentissimo - Building a blogging website
