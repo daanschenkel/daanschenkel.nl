@@ -1,0 +1,43 @@
+title = "Daan Schenkel"
+base_url = "https://daanschenkel.nl"
+description = ""
+theme = "hermit_zola"
+
+# Whether to automatically compile all Sass files in the sass directory
+compile_sass = false
+
+# Whether to build a search index to be used later on by a JavaScript library
+build_search_index = false
+
+[extra]
+home_subtitle = "Hello! Welcome to my little website."
+
+
+hermit_menu = [
+    { link = "/about", name = "About" },
+    { link = "/projects", name = "Projects" },
+    { link = "/blog", name = "Blog" },
+]
+
+hermit_social = [
+    { name = "github", link = "https://github.com/daanschenkel" },
+    { name = "linkedin", link = "https://www.linkedin.com/in/daan-schenkel-b65726226/"},
+    {name = "discord", link = "https://discord.com/users/654390669472694284"},
+    { name = "email", link = "mailto:web@dannydandan.anonaddy.com" }
+]
+
+
+
+[extra.highlightjs]
+enable = true
+clipboard = true
+theme = "vs2015"
+
+[extra.disqus]
+enable = false
+# Take this from your Disqus account
+shortname = "my-supa-dupa-blog"
+
+[extra.author]
+name = "Daan Schenkel"
+email = "daan@daanschenkel.nl"
