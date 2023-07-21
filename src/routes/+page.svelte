@@ -35,15 +35,14 @@
 		}
 	];
 
-	let data = useLanyard('654390669472694284', { type: 'rest', restInterval: 1e3 });
-
-	let wsData = useLanyard('654390669472694284');
-	let switchWS = setInterval(() => {
-		if (typeof $wsData !== 'undefined') {
-			$data = $wsData;
-			clearInterval(switchWS);
-		}
-	}, 1e3);
+	let data = useLanyard('654390669472694284');
+	setTimeout(() => {
+		if (!$data)
+			data = useLanyard('654390669472694284', {
+				type: 'rest',
+				restInterval: 5000
+			});
+	}, 4000);
 </script>
 
 <div class="text-white flex flex-col items-center justify-center h-screen w-full">
