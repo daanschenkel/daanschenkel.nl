@@ -3,7 +3,7 @@
 	import Fa from 'svelte-fa';
 	import { faCode, faEnvelope, faHeadphones, faLink } from '@fortawesome/free-solid-svg-icons';
 	import { faDiscord, faGithub, faLinkedin, faSpotify } from '@fortawesome/free-brands-svg-icons';
-
+	let takingLong = false;
 	const links = [
 		{
 			icon: faGithub,
@@ -34,7 +34,6 @@
 			url: 'mailto:web@dannydandan.anonaddy.com'
 		}
 	];
-
 	let data = useLanyard('654390669472694284');
 	setTimeout(() => {
 		if (!$data)
@@ -42,6 +41,7 @@
 				type: 'rest',
 				restInterval: 5000
 			});
+		takingLong = true;
 	}, 4000);
 </script>
 
@@ -140,9 +140,15 @@
 			</div>
 		</div>
 	{:else}
-		<pre>
-      <code>Loading...</code>
-    </pre>
+		<p class="text-center">
+			Loading...
+			<br />
+			<span
+				class="text-gray-400 text-center"
+				style={`transition: opacity 0.5s; opacity: ${takingLong ? '1' : '0'};`}
+				>This is taking a while, Lanyard is probably down. Please try again later.
+			</span>
+		</p>
 	{/if}
 </div>
 
