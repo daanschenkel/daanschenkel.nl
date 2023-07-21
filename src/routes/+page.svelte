@@ -46,9 +46,9 @@
 	}, 1e3);
 </script>
 
-<div class="text-white flex flex-col items-center justify-center h-screen">
+<div class="text-white flex flex-col items-center justify-center h-screen w-full">
 	{#if $data}
-		<div class="flex flex-col items-center justify-center w-full">
+		<div class="flex flex-col items-center justify-center w-full px-4">
 			<img
 				src={`https://cdn.discordapp.com/avatars/${$data.discord_user.id}/${$data.discord_user.avatar}.png`}
 				alt="Avatar"
@@ -71,7 +71,11 @@
 						</h2>
 						<div class="flex items-center justify-left mt-4">
 							<img src={$data.spotify.album_art_url} alt="Album art" class="w-16 h-16 rounded" />
-							<h1 class="text-2xl font-bold ml-4">{$data.spotify.song} - {$data.spotify.artist}</h1>
+							<h1
+								class={`${$data.spotify.song.length > 30 ? 'text-sm' : 'text-xl'} font-bold ml-4`}
+							>
+								{$data.spotify.song} - {$data.spotify.artist}
+							</h1>
 						</div>
 					</div>
 				{/if}
@@ -123,7 +127,7 @@
 			<h3 class="text-3xl font-bold flex items-center justify-center">
 				<Fa icon={faLink} class="mr-2" /> Links
 			</h3>
-			<div class="flex flex-row items-center justify-center">
+			<div class="flex flex-row items-center justify-center flex-wrap">
 				{#each links as link}
 					<a
 						href={link.url}
