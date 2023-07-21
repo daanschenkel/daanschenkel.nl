@@ -1,7 +1,13 @@
 <script>
 	import { useLanyard } from 'svelte-lanyard';
 	import Fa from 'svelte-fa';
-	import { faCode, faEnvelope, faHeadphones, faLink } from '@fortawesome/free-solid-svg-icons';
+	import {
+		faCode,
+		faEnvelope,
+		faHeadphones,
+		faLink,
+		faHeart
+	} from '@fortawesome/free-solid-svg-icons';
 	import { faDiscord, faGithub, faLinkedin, faSpotify } from '@fortawesome/free-brands-svg-icons';
 	let takingLong = false;
 	const links = [
@@ -138,14 +144,9 @@
 					</a>
 				{/each}
 			</div>
-			<a
-				class="text-gray-400 text-center mt-4"
-				href="https://lanyard.rest/"
-				target="_blank"
-				rel="noopener noreferrer"
-			>
-				Powered by Lanyard
-			</a>
+			<p class="text-gray-400 text-center mt-4 items-center justify-center flex flex-row">
+				Made with <Fa icon={faHeart} class="text-red-500 mr-1 ml-1" /> in The Netherlands
+			</p>
 		</div>
 	{:else}
 		<p class="text-center">
