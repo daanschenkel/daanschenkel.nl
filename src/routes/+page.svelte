@@ -138,6 +138,14 @@
 					</a>
 				{/each}
 			</div>
+			<a
+				class="text-gray-400 text-center mt-4"
+				href="https://lanyard.rest/"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				Powered by Lanyard
+			</a>
 		</div>
 	{:else}
 		<p class="text-center">
