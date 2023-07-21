@@ -39,7 +39,7 @@
 
 	let wsData = useLanyard('654390669472694284');
 	let switchWS = setInterval(() => {
-		if (typeof $wsData.discord_user !== 'undefined') {
+		if (typeof $wsData !== 'undefined') {
 			$data = $wsData;
 			clearInterval(switchWS);
 		}
