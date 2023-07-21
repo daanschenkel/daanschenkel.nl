@@ -122,7 +122,7 @@
 				{/each}
 			</div>
 			<br />
-			<h3 class="text-3xl font-bold flex items-center justify-center">
+			<h3 class="text-2xl font-bold flex items-center justify-center">
 				<Fa icon={faLink} class="mr-2" /> Links
 			</h3>
 			<div class="flex flex-row items-center justify-center flex-wrap">
