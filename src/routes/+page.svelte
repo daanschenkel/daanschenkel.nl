@@ -71,11 +71,10 @@
 						</h2>
 						<div class="flex items-center justify-left mt-4">
 							<img src={$data.spotify.album_art_url} alt="Album art" class="w-16 h-16 rounded" />
-							<h1
-								class={`${$data.spotify.song.length > 30 ? 'text-sm' : 'text-xl'} font-bold ml-4`}
-							>
-								{$data.spotify.song} - {$data.spotify.artist}
-							</h1>
+							<div class="flex flex-col">
+								<h1 class="text-xl font-bold ml-4">{$data.spotify.song}</h1>
+								<p class="text-gray-400 ml-4">by {$data.spotify.artist}</p>
+							</div>
 						</div>
 					</div>
 				{/if}
