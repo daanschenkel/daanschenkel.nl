@@ -6,7 +6,8 @@
 		faEnvelope,
 		faHeadphones,
 		faLink,
-		faHeart
+		faHeart,
+		faFile
 	} from '@fortawesome/free-solid-svg-icons';
 	import { faDiscord, faGithub, faLinkedin, faSpotify } from '@fortawesome/free-brands-svg-icons';
 	let takingLong = false;
@@ -38,6 +39,11 @@
 			icon: faEnvelope,
 			name: 'Email',
 			url: 'mailto:web@dannydandan.anonaddy.com'
+		},
+		{
+			icon: faFile,
+			name: 'Resume',
+			url: '/resume.pdf'
 		}
 	];
 	let data = useLanyard('654390669472694284');
