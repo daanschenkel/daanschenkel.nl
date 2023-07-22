@@ -90,8 +90,8 @@
 					</div>
 				{/if}
 				{#each $data.activities as activity}
+					<br />
 					{#if activity.name === 'Code'}
-						{#if $data.spotify} <br /> {/if}
 						<div class="bg-gray-800 rounded p-4 w-full">
 							<h2 class="text-xl font-bold flex items-center justify-left">
 								<Fa icon={faCode} class="mr-2" /> Coding
@@ -109,7 +109,7 @@
 							</div>
 						</div>
 					{:else if activity.type === 0}
-						{#if $data.spotify} <br /> {/if}
+						<br />
 						<div class="bg-gray-800 rounded p-4 w-full">
 							<h2 class="text-xl font-bold flex items-center justify-left">
 								{activity.name || 'No activity'}
