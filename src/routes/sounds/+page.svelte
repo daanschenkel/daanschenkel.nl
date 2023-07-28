@@ -9,6 +9,7 @@
 	let theActualData = data.data;
 	let takingLong = false;
 	let sounds = [];
+	let rateLimit = false;
 
 	async function stuff() {
 		let lanyard = await fetch('https://api.lanyard.rest/v1/users/654390669472694284');
@@ -57,7 +58,12 @@
 				{#each sounds as sound}
 					<button
 						on:click={() => {
+							if (rateLimit) return;
+							rateLimit = true;
 							socket.emit('play', sound);
+							setTimeout(() => {
+								rateLimit = false;
+							}, 2000);
 						}}
 						class="flex flex-row items-center justify-center bg-gray-800 rounded p-4 m-2"
 					>
