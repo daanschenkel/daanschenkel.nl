@@ -7,9 +7,14 @@
 		faHeadphones,
 		faLink,
 		faHeart,
-		faFile
+		faFile,
+		faVolumeHigh,
+		faBackward
 	} from '@fortawesome/free-solid-svg-icons';
 	import { faDiscord, faGithub, faLinkedin, faSpotify } from '@fortawesome/free-brands-svg-icons';
+	import { beforeUpdate, onMount } from 'svelte';
+	export let data;
+	let theActualData = data.data;
 	let takingLong = false;
 	const links = [
 		{
@@ -46,52 +51,70 @@
 			url: '/resume.pdf'
 		}
 	];
-	let data = useLanyard('654390669472694284');
-	setTimeout(() => {
-		if (!$data)
-			data = useLanyard('654390669472694284', {
-				type: 'rest',
-				restInterval: 5000
-			});
-		takingLong = true;
-	}, 4000);
+	async function stuff() {
+		let lanyard = await fetch('https://api.lanyard.rest/v1/users/654390669472694284');
+		lanyard = await lanyard.json();
+		theActualData = lanyard.data;
+	}
+	onMount(() => {
+		let fetchInterval = setInterval(stuff, 5000);
+		//remove interval on unmount
+		document.getElementById('sounds').addEventListener('click', () => {
+			clearInterval(fetchInterval);
+		});
+	});
 </script>
 
 <div class="text-white flex flex-col items-center justify-center h-screen w-full">
-	{#if $data}
+	{#if theActualData}
 		<div class="flex flex-col items-center justify-center w-full px-4">
 			<img
-				src={`https://cdn.discordapp.com/avatars/${$data.discord_user.id}/${$data.discord_user.avatar}.png`}
+				src={`https://cdn.discordapp.com/avatars/${theActualData.discord_user.id}/${theActualData.discord_user.avatar}.png`}
 				alt="Avatar"
-				class={`rounded-full w-32 h-32 ${$data.discord_status}`}
+				class={`rounded-full w-32 h-32 ${theActualData.discord_status}`}
 			/>
 			<h1 class="text-4xl font-bold mt-4">Danny</h1>
 			<br />
+
+			<a
+				href="sounds"
+				class="flex flex-row items-center justify-center bg-gray-800 rounded p-4"
+				id="sounds"
+			>
+				<h2 class="text-xl font-bold flex items-center justify-center">
+					<Fa icon={faVolumeHigh} class="mr-2" /> Sounds
+				</h2>
+			</a>
+			<br />
 			<div class="flex flex-col items-center justify-center">
-				{#if $data.activities.length <= 1}
+				{#if theActualData.activities.length <= 1}
 					<h1 class="text-2xl text-center">
-						{#if $data.activities.length <= 1}
+						{#if theActualData.activities.length <= 1}
 							<p class="text-gray-400">I'm currently not doing anything.</p>
 						{/if}
 					</h1>
 				{/if}
-				{#if $data.spotify}
+				{#if theActualData.spotify}
 					<div class="bg-gray-800 rounded p-4 w-full">
 						<h2 class="text-xl font-bold flex items-center justify-left">
 							<Fa icon={faSpotify} class="mr-2" /> Listening to Spotify
 						</h2>
 						<div class="flex items-center justify-left mt-4">
-							<img src={$data.spotify.album_art_url} alt="Album art" class="w-16 h-16 rounded" />
+							<img
+								src={theActualData.spotify.album_art_url}
+								alt="Album art"
+								class="w-16 h-16 rounded"
+							/>
 							<div class="flex flex-col">
-								<h1 class="text-xl font-bold ml-4">{$data.spotify.song}</h1>
-								<p class="text-gray-400 ml-4">by {$data.spotify.artist}</p>
+								<h1 class="text-xl font-bold ml-4">{theActualData.spotify.song}</h1>
+								<p class="text-gray-400 ml-4">by {theActualData.spotify.artist}</p>
 							</div>
 						</div>
 					</div>
 				{/if}
-				{#each $data.activities as activity}
-					<br />
+				{#each theActualData.activities as activity}
 					{#if activity.name === 'Code'}
+						<br />
 						<div class="bg-gray-800 rounded p-4 w-full">
 							<h2 class="text-xl font-bold flex items-center justify-left">
 								<Fa icon={faCode} class="mr-2" /> Coding
@@ -130,9 +153,12 @@
 								</div>
 							</div>
 						</div>
+						<br />
 					{/if}
 				{/each}
 			</div>
+			<br />
+
 			<br />
 			<h4 class="text-2xl font-bold flex items-center justify-center">
 				<Fa icon={faLink} class="mr-2" /> Links
