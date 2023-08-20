@@ -50,11 +50,16 @@
 				class={`rounded-full w-32 h-32 ${theActualData.discord_status}`}
 			/>
 			<h1 class="text-4xl font-bold mt-4">Danny</h1>
-			<h2 class="text-gray-400 text-center mt-4 text-xl">
-				Play sounds on my computer! <br /><b>Only plays on my end when I'm online. (obviously)</b>
-			</h2>
+			<h2 class="text-gray-400 text-center mt-4 text-xl">Play sounds on my computer!</h2>
 			<br />
 			<div class="flex flex-row items-center justify-center">
+				{#if sounds.length === 0}
+					<p
+						class="text-gray-400 text-center items-center justify-center flex flex-row text-xl mb-2"
+					>
+						Couldn't connect to the sound server, i'm probably offline.
+					</p>
+				{/if}
 				{#each sounds as sound}
 					<button
 						on:click={() => {
