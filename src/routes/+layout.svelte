@@ -1,5 +1,8 @@
 <script>
 	import '../app.postcss';
+
+	console.log('%cDaan Schenkel', 'color: green; font-size: 40px;');
+	console.log('%chttps://daanschenkel.nl', 'color: white; font-size: 15px;');
 </script>
 
 <div class="bg-black min-h-screen">
