@@ -46,6 +46,7 @@
 	let socket;
 	let socketConnected = false;
 	let sounds = [];
+	let socketUsers = 0;
 
 	//when page is sounds, load socket
 	$: if (page == 'sounds') {
@@ -64,6 +65,9 @@
 			//load audio file
 			let audio = new Audio(`https://sounds.daanschenkel.nl/${data}.wav`);
 			audio.play();
+		});
+		socket.on('users', (data) => {
+			socketUsers = data;
 		});
 	}
 
@@ -381,6 +385,12 @@
 					>
 				{/each}
 			</span>
+
+			{#if socketConnected && socketUsers > 0}
+				<p class="text-white text-center text-md p-4" in:fade={{ duration: 1000, delay: 3000 }}>
+					There are currently {socketUsers} users connected.
+				</p>
+			{/if}
 
 			<button
 				class="bg-white text-black font-bold py-2 px-4 rounded mt-2"
