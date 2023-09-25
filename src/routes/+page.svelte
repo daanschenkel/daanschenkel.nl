@@ -1,11 +1,50 @@
 <script>
 	import { onMount } from 'svelte';
-	import { fade } from 'svelte/transition';
+	import { fade, fly } from 'svelte/transition';
+	import { page as pageStore } from '$app/stores';
+	import Fa from 'svelte-fa/src/fa.svelte';
+	import { faEnvelope, faHeadphones, faFile } from '@fortawesome/free-solid-svg-icons';
+	import { faDiscord, faGithub, faLinkedin } from '@fortawesome/free-brands-svg-icons';
+	const links = [
+		{
+			icon: faGithub,
+			name: 'GitHub',
+			url: 'https://github.com/daanschenkel'
+		},
+
+		{
+			icon: faHeadphones,
+			name: 'Last.fm',
+			url: 'https://www.last.fm/user/DannyDanDan_'
+		},
+
+		{
+			icon: faDiscord,
+			name: 'Discord',
+			url: 'https://discord.com/users/654390669472694284'
+		},
+
+		{
+			icon: faLinkedin,
+			name: 'LinkedIn',
+			url: 'https://www.linkedin.com/in/daan-schenkel-b65726226/'
+		},
+		{
+			icon: faEnvelope,
+			name: 'Email',
+			url: 'mailto:web@dannydandan.anonaddy.com'
+		},
+		{
+			icon: faFile,
+			name: 'Resume',
+			url: '/resume.pdf'
+		}
+	];
 	let page;
 	let mounted = false;
 	onMount(() => {
 		mounted = true;
-		page = 'home';
+		page = $pageStore.url.searchParams.get('page') || 'home';
 	});
 	function switchPage(newPage) {
 		page = null;
@@ -26,19 +65,11 @@
 
 	const projects = [
 		{
-			name: 'Talentissimo',
-			description: 'Made a custom-coded PHP blogging website for people with giftedness.'
-		},
-		{
 			name: 'Starling Days',
 			description:
 				'Designed and created a band website for the band "Starling Days".<br/><a href="https://starlingdays.com" target="_blank" class="underline">Visit the website</a>'
 		},
-		{
-			name: 'PraktijkBijBaan',
-			description:
-				'Developing a full stack website where people with less knowledge can find jobs that appeal to them and bring them in contact with people that can give them this job!'
-		},
+
 		{
 			name: 'Karen.pics',
 			description:
@@ -53,11 +84,6 @@
 			name: 'Snowcloud',
 			description:
 				'Created a web portal where users could notify of their absence, see the staff list, view banned users, Give users strikes, appeal them, Demote/promote them and much more.'
-		},
-		{
-			name: 'Wearning',
-			description:
-				'Developed a website that would get the current weather and the wardrobe of the user, and would give the user the best combination of clothes to wear for the day.'
 		},
 		{
 			name: 'Minecraft Quest',
@@ -85,7 +111,7 @@
 {#if !page}
 	<noscript>
 		<div class="bg-black min-h-screen flex justify-center items-center flex-col">
-			<img src="https://media4.giphy.com/media/Pjs1kqtH1KTaU/giphy.gif" />
+			<img src="https://media4.giphy.com/media/Pjs1kqtH1KTaU/giphy.gif" alt="funny gif" />
 			<p class="text-white text-center text-3xl p-4">
 				Please enable JavaScript to load 3tb of animations, thanks!
 			</p>
@@ -124,6 +150,12 @@
 					on:click={() => switchPage('projects')}
 				>
 					Projects
+				</button>
+				<button
+					class="bg-white text-black font-bold py-2 px-4 rounded"
+					on:click={() => switchPage('contact')}
+				>
+					Contact
 				</button>
 			</span>
 		</div>
@@ -188,7 +220,11 @@
 				<div class="flex justify-center items-center flex-col gap-4 mt-4">
 					{#each projects as project (project)}
 						<span
-							in:fade|global={{ duration: 500, delay: 1500 + 200 * projects.indexOf(project) }}
+							in:fly|global={{
+								duration: 500,
+								delay: 1500 + 200 * projects.indexOf(project),
+								x: 50
+							}}
 							class="flex items-center flex-col text-center m-1 max-w-lg"
 						>
 							<h1 class="text-xl font-bold text-white">{project.name}</h1>
@@ -209,15 +245,65 @@
 			</button>
 		</div>
 	{/if}
+
+	{#if page == 'contact'}
+		<div
+			class="flex justify-center items-center min-h-screen flex-col p-4"
+			out:fade={{
+				duration: 500
+			}}
+		>
+			<span in:fade={{ duration: 1000 }} class="flex items-center">
+				<h1 class="text-5xl font-bold text-white">Contact</h1></span
+			>
+
+			<span in:fade={{ duration: 1000, delay: 1000 }} class="flex items-center mt-2 gap-2">
+				<span class="text-white text-3xl text-center">
+					Only for real humans, no robots allowed!
+				</span>
+			</span>
+			<img
+				src="/mail.png"
+				class="mt-4 rotatehover overflow-hidden max-w-2xl"
+				alt="mail icon"
+				in:fade={{ duration: 1000, delay: 2000 }}
+			/>
+
+			<h2
+				class="text-white text-center mt-2 text-3xl font-bold"
+				in:fade={{ duration: 1000, delay: 4000 }}
+			>
+				Links
+			</h2>
+
+			<span in:fade={{ duration: 1000, delay: 5000 }} class="flex items-center mt-2 gap-4 mb-4">
+				{#each links as link (link.url)}
+					<a
+						href={link.url}
+						target="_blank"
+						class="text-white text-2xl"
+						in:fade={{ duration: 1000, delay: 4500 }}><Fa icon={link.icon} /></a
+					>
+				{/each}
+			</span>
+
+			<button
+				class="bg-white text-black font-bold py-2 px-4 rounded mt-2"
+				on:click={() => switchPage('home')}
+				in:fade={{ duration: 1000, delay: 6000 }}
+			>
+				Back
+			</button>
+		</div>
+	{/if}
 </div>
 
 <style>
 	.wave {
 		animation-name: wave-animation;
-		animation-duration: 2.5s;
+		animation-timing-function: linear;
+		animation-duration: 3s;
 		animation-iteration-count: infinite;
-		transform-origin: 70% 70%;
-		display: inline-block;
 	}
 	@keyframes wave-animation {
 		0% {
@@ -243,6 +329,26 @@
 		}
 		100% {
 			transform: rotate(0deg);
+		}
+	}
+
+	.rotatehover {
+		animation-name: spin-animation;
+		animation-timing-function: linear;
+		animation-duration: 20s;
+		animation-iteration-count: infinite;
+	}
+
+	.rotatehover:hover {
+		animation-play-state: paused;
+	}
+
+	@keyframes spin-animation {
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(-365deg);
 		}
 	}
 </style>
