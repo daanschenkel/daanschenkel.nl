@@ -144,6 +144,18 @@
 	>
 {/if}
 <div>
+	{#if socketConnected}
+		<div class="fixed top-0 left-0 right-0 z-50 min-w-full flex justify-center items-center">
+			<button
+				class="text-white text-center text-xl p-4"
+				on:click={() => {
+					socket.disconnect();
+				}}
+			>
+				You are connected to the soundserver, click here to disconnect.
+			</button>
+		</div>
+	{/if}
 	{#if page == 'home'}
 		<div
 			class="flex justify-center items-center min-h-screen flex-col"
@@ -351,9 +363,10 @@
 				<div class="flex justify-center items-center flex-col">
 					{#if !socketConnected || sounds.length < 1}
 						<span in:fade={{ duration: 1000, delay: 2000 }} class="flex items-center mt-2 gap-2">
-							<h2 class="text-white text-center mt-2 text-xl">
-								I cant seem to connect to the soundserver. Danny's probably asleep/offline.
-							</h2>
+							<button class="text-white text-center mt-2 text-xl" on:click={() => socket.connect()}>
+								I cant seem to connect to the soundserver. Danny's probably asleep/offline. Click to
+								retry
+							</button>
 						</span>
 					{/if}
 				</div>
