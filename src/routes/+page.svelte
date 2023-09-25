@@ -5,6 +5,7 @@
 	import Fa from 'svelte-fa/src/fa.svelte';
 	import { faEnvelope, faHeadphones, faFile } from '@fortawesome/free-solid-svg-icons';
 	import { faDiscord, faGithub, faLinkedin } from '@fortawesome/free-brands-svg-icons';
+	import { io } from 'socket.io-client';
 	const links = [
 		{
 			icon: faGithub,
@@ -42,6 +43,29 @@
 	];
 	let page;
 	let mounted = false;
+	let socket;
+	let socketConnected = false;
+	let sounds = [];
+
+	//when page is sounds, load socket
+	$: if (page == 'sounds') {
+		socket = io('https://sounds.daanschenkel.nl');
+		socket.on('connect', () => {
+			socketConnected = true;
+		});
+		socket.on('disconnect', () => {
+			socketConnected = false;
+		});
+		socket.on('list', (data) => {
+			sounds = data;
+		});
+		socket.on('play', (data) => {
+			//load audio file
+			let audio = new Audio(`https://sounds.daanschenkel.nl/${data}.wav`);
+			audio.play();
+		});
+	}
+
 	onMount(() => {
 		mounted = true;
 		page = $pageStore.url.searchParams.get('page') || 'home';
@@ -138,24 +162,34 @@
 			<span in:fade={{ duration: 1000, delay: 1500 }} class="flex items-center">
 				<h1 class="text-3xl text-white text-center">What brings you here today?</h1>
 			</span>
-			<span in:fade={{ duration: 1000, delay: 2500 }} class="flex items-center mt-2 gap-2">
+			<span class="flex items-center mt-2 gap-2">
 				<button
 					class="bg-white text-black font-bold py-2 px-4 rounded"
 					on:click={() => switchPage('about')}
+					in:fly={{ duration: 500, delay: 2500, x: 50 }}
 				>
 					About
 				</button>
 				<button
 					class="bg-white text-black font-bold py-2 px-4 rounded"
 					on:click={() => switchPage('projects')}
+					in:fly={{ duration: 500, delay: 2800, x: 50 }}
 				>
 					Projects
 				</button>
 				<button
 					class="bg-white text-black font-bold py-2 px-4 rounded"
 					on:click={() => switchPage('contact')}
+					in:fly={{ duration: 500, delay: 3100, x: 50 }}
 				>
 					Contact
+				</button>
+				<button
+					class="bg-white text-black font-bold py-2 px-4 rounded"
+					on:click={() => switchPage('sounds')}
+					in:fly={{ duration: 500, delay: 3400, x: 50 }}
+				>
+					Sounds
 				</button>
 			</span>
 		</div>
@@ -283,6 +317,43 @@
 						target="_blank"
 						class="text-white text-2xl"
 						in:fade={{ duration: 1000, delay: 4500 }}><Fa icon={link.icon} /></a
+					>
+				{/each}
+			</span>
+
+			<button
+				class="bg-white text-black font-bold py-2 px-4 rounded mt-2"
+				on:click={() => switchPage('home')}
+				in:fade={{ duration: 1000, delay: 6000 }}
+			>
+				Back
+			</button>
+		</div>
+	{/if}
+	{#if page == 'sounds'}
+		<div
+			class="flex justify-center items-center min-h-screen flex-col p-4"
+			out:fade={{
+				duration: 500
+			}}
+		>
+			<span in:fade={{ duration: 1000 }} class="flex items-center">
+				<h1 class="text-5xl font-bold text-white">Sounds</h1></span
+			>
+
+			<span in:fade={{ duration: 1000, delay: 1000 }} class="flex items-center mt-2 gap-2">
+				<span class="text-white text-3xl text-center">
+					Annoy me by playing sounds on my computer!
+				</span>
+			</span>
+
+			<span class="flex items-center mt-2 gap-4 mb-4">
+				{#each sounds as sound (sound)}
+					<button
+						target="_blank"
+						class="bg-white text-black font-bold py-2 px-4 rounded"
+						in:fly={{ duration: 1000, delay: 2000 + 200 * sounds.indexOf(sound), x: 50 }}
+						on:click={() => socket.emit('play', sound.split('.')[0])}>{sound.split('.')[0]}</button
 					>
 				{/each}
 			</span>
