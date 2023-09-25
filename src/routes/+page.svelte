@@ -346,8 +346,18 @@
 					Annoy me by playing sounds on my computer!
 				</span>
 			</span>
-
-			<span class="flex items-center mt-2 gap-4 mb-4">
+			<span in:fade={{ duration: 1000, delay: 2000 }} class="flex items-center mt-2 gap-2">
+				<div class="flex justify-center items-center flex-col">
+					{#if !socketConnected || sounds.length < 1}
+						<span in:fade={{ duration: 1000, delay: 2000 }} class="flex items-center mt-2 gap-2">
+							<h2 class="text-white text-center mt-2 text-xl">
+								I cant seem to connect to the soundserver. Danny's probably asleep/offline.
+							</h2>
+						</span>
+					{/if}
+				</div>
+			</span>
+			<span class="grid grid-cols-3 gap-4 mt-4">
 				{#each sounds as sound (sound)}
 					<button
 						target="_blank"
