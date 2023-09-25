@@ -55,6 +55,7 @@
 		});
 		socket.on('disconnect', () => {
 			socketConnected = false;
+			sounds = [];
 		});
 		socket.on('list', (data) => {
 			sounds = data;
