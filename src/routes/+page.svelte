@@ -47,6 +47,7 @@
 	let socketConnected = false;
 	let sounds = [];
 	let socketUsers = 0;
+	let navigated = false;
 
 	//when page is sounds, load socket
 	$: if (page == 'sounds') {
@@ -78,6 +79,7 @@
 	function switchPage(newPage) {
 		page = null;
 		mounted = false;
+		navigated = true;
 		setTimeout(() => {
 			page = newPage;
 			mounted = true;
@@ -147,9 +149,11 @@
 		</div></noscript
 	>
 {/if}
-<div>
+<div class={`${socketConnected ? 'mt-4' : 'mt-0'} `}>
 	{#if socketConnected}
-		<div class="fixed top-0 left-0 right-0 z-50 min-w-full flex justify-center items-center">
+		<div
+			class="fixed top-0 left-0 right-0 z-50 min-w-full flex justify-center items-center bg-green-500"
+		>
 			<button
 				class="text-white text-center text-xl p-4"
 				on:click={() => {
@@ -166,9 +170,10 @@
 			out:fade={{
 				duration: 500
 			}}
+			in:fade={{ duration: 2000 }}
 		>
 			<span
-				in:fade={{ duration: 1000, delay: 300 }}
+				in:fade={{ duration: navigated ? 0 : 1000, delay: navigated ? 0 : 300 }}
 				class="flex items-center gap-2 lg:flex-row flex-col"
 			>
 				<h1 class="text-5xl font-bold text-white wave">👋</h1>
@@ -176,35 +181,38 @@
 					Hi, welcome to my little website!
 				</h1></span
 			>
-			<span in:fade={{ duration: 1000, delay: 1500 }} class="flex items-center">
+			<span
+				in:fade={{ duration: navigated ? 0 : 1000, delay: navigated ? 0 : 1500 }}
+				class="flex items-center"
+			>
 				<h1 class="text-3xl text-white text-center">What brings you here today?</h1>
 			</span>
 			<span class="flex items-center mt-2 gap-2">
 				<button
 					class="bg-white text-black font-bold py-2 px-4 rounded"
 					on:click={() => switchPage('about')}
-					in:fly={{ duration: 500, delay: 2500, x: 50 }}
+					in:fly={{ duration: navigated ? 0 : 500, delay: navigated ? 0 : 2500, x: 50 }}
 				>
 					About
 				</button>
 				<button
 					class="bg-white text-black font-bold py-2 px-4 rounded"
 					on:click={() => switchPage('projects')}
-					in:fly={{ duration: 500, delay: 2800, x: 50 }}
+					in:fly={{ duration: navigated ? 0 : 500, delay: navigated ? 0 : 2800, x: 50 }}
 				>
 					Projects
 				</button>
 				<button
 					class="bg-white text-black font-bold py-2 px-4 rounded"
 					on:click={() => switchPage('contact')}
-					in:fly={{ duration: 500, delay: 3100, x: 50 }}
+					in:fly={{ duration: navigated ? 0 : 500, delay: navigated ? 0 : 3100, x: 50 }}
 				>
 					Contact
 				</button>
 				<button
 					class="bg-white text-black font-bold py-2 px-4 rounded"
 					on:click={() => switchPage('sounds')}
-					in:fly={{ duration: 500, delay: 3400, x: 50 }}
+					in:fly={{ duration: navigated ? 0 : 500, delay: navigated ? 0 : 3400, x: 50 }}
 				>
 					Sounds
 				</button>
