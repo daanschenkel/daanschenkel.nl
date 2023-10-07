@@ -85,13 +85,13 @@
 			stuffSocket.on('deviceUpdate', (data) => {
 				let found = false;
 				for (let i = 0; i < devices.length; i++) {
-					if (devices[i].id == data.id) {
+					if (devices[i].device.id == data.device.id) {
 						found = true;
 						devices[i] = data;
 					}
 				}
 				if (!found) {
-					devices.push(data);
+					devices = [...devices, data];
 				}
 			});
 		}
@@ -358,27 +358,29 @@
 				{#if devices.length < 1}
 					<p class="text-center">None of my devices are currently connected.</p>
 				{/if}
-				{#each devices as device}
-					<div
-						class="flex flex-col items-center justify-center p-2 rounded bg-white text-black w-96"
-					>
-						<h2 class="text-center font-bold text-3xl">{device.device.name}</h2>
-						<div class="grid grid-cols-2">
-							{#each Object.entries(device.data) as [key, value]}
-								<div class="p-2">
-									<h2 class="text-center font-bold text-xl">{key}</h2>
-									{#if typeof value !== 'object'}
-										<p class="text-center">{value}</p>
-									{:else}
-										{#each Object.entries(value) as [key, value]}
-											<p class="text-center">{key}: {value}</p>
-										{/each}
-									{/if}
-								</div>
-							{/each}
+				<div class="flex flex-col items-center justify-center p-2 rounded bg-white text-black w-96">
+					{#each devices as device}
+						<div
+							class="flex flex-col items-center justify-center p-2 rounded bg-white text-black w-96"
+						>
+							<h2 class="text-center font-bold text-3xl">{device.device.name}</h2>
+							<div class="grid grid-cols-2">
+								{#each Object.entries(device.data) as [key, value]}
+									<div class="p-2">
+										<h2 class="text-center font-bold text-xl">{key}</h2>
+										{#if typeof value !== 'object'}
+											<p class="text-center">{value}</p>
+										{:else}
+											{#each Object.entries(value) as [key, value]}
+												<p class="text-center">{key}: {value}</p>
+											{/each}
+										{/if}
+									</div>
+								{/each}
+							</div>
 						</div>
-					</div>
-				{/each}
+					{/each}
+				</div>
 			</span>
 			<button
 				class="bg-white text-black font-bold py-2 px-4 rounded mt-2"
