@@ -87,12 +87,10 @@
 				for (let i = 0; i < devices.length; i++) {
 					if (devices[i].device.id == data.device.id) {
 						found = true;
-						if (data.offline) devices.splice(i, 1);
-
 						devices[i] = data;
 					}
 				}
-				if (!found && !data.offline) {
+				if (!found) {
 					devices = [...devices, data];
 				}
 			});
@@ -368,20 +366,24 @@
 								class="flex flex-col items-center justify-center p-2 rounded bg-white text-black w-96"
 							>
 								<h2 class="text-center font-bold text-3xl">{device.device.name}</h2>
-								<div class="grid grid-cols-2">
-									{#each Object.entries(device.data) as [key, value]}
-										<div class="p-2">
-											<h2 class="text-center font-bold text-xl">{key}</h2>
-											{#if typeof value !== 'object'}
-												<p class="text-center">{value}</p>
-											{:else}
-												{#each Object.entries(value) as [key, value]}
-													<p class="text-center">{key}: {value}</p>
-												{/each}
-											{/if}
-										</div>
-									{/each}
-								</div>
+								{#if !device.data.offline}
+									<div class="grid grid-cols-2">
+										{#each Object.entries(device.data) as [key, value]}
+											<div class="p-2">
+												<h2 class="text-center font-bold text-xl">{key}</h2>
+												{#if typeof value !== 'object'}
+													<p class="text-center">{value}</p>
+												{:else}
+													{#each Object.entries(value) as [key, value]}
+														<p class="text-center">{key}: {value}</p>
+													{/each}
+												{/if}
+											</div>
+										{/each}
+									</div>
+								{:else}
+									<p class="text-center">Connection to device lost</p>
+								{/if}
 							</div>
 						{/each}
 					</div>
