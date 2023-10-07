@@ -355,6 +355,9 @@
 				in:fade={{ duration: 1000, delay: 1000 }}
 				class="flex items-center mt-2 gap-2 text-white"
 			>
+				{#if devices.length < 1}
+					<p class="text-center">None of my devices are currently connected.</p>
+				{/if}
 				{#each devices as device}
 					<div
 						class="flex flex-col items-center justify-center p-2 rounded bg-white text-black w-96"
