@@ -144,7 +144,7 @@
 		{
 			name: 'Minecraft Quest',
 			description:
-				'Developing a website that shows users a bingocard, and lets them complete it in Minecraft. The 2 systems are linked to each other using Java and web APIs. This would automate (almost) the entire event.<br/><a href="https://mcquest.nl" target="_blank" class="underline">Visit the website</a>'
+				'Developing a website that shows users a bingocard, and lets them complete it in Minecraft. The 2 systems are linked to each other using Java and web APIs. This would automate (almost) the entire event.'
 		},
 		{
 			name: 'P.E.T.S',
