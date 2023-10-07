@@ -44,12 +44,14 @@
 	let page;
 	let mounted = false;
 	let socket;
+	let stuffSocket;
 	let socketConnected = false;
 	let sounds = [];
 	let socketUsers = 0;
 	let navigated = false;
-
-	//when page is sounds, load socket
+	let stuffSocketConnected = false;
+	let devices = [];
+	//page specific code
 	$: if (page == 'sounds') {
 		socket = io('https://sounds.daanschenkel.nl');
 		socket.on('connect', () => {
@@ -70,6 +72,29 @@
 		socket.on('users', (data) => {
 			socketUsers = data;
 		});
+	}
+	$: if (page == 'stuff') {
+		if (!stuffSocket) {
+			stuffSocket = io('https://devices.daanschenkel.nl');
+			stuffSocket.on('connect', () => {
+				stuffSocketConnected = true;
+			});
+			stuffSocket.on('disconnect', () => {
+				stuffSocketConnected = false;
+			});
+			stuffSocket.on('deviceUpdate', (data) => {
+				let found = false;
+				for (let i = 0; i < devices.length; i++) {
+					if (devices[i].id == data.id) {
+						found = true;
+						devices[i] = data;
+					}
+				}
+				if (!found) {
+					devices.push(data);
+				}
+			});
+		}
 	}
 
 	onMount(() => {
@@ -204,17 +229,25 @@
 				</button>
 				<button
 					class="bg-white text-black font-bold py-2 px-4 rounded"
-					on:click={() => switchPage('contact')}
+					on:click={() => switchPage('stuff')}
 					in:fly={{ duration: navigated ? 0 : 500, delay: navigated ? 0 : 3100, x: 50 }}
 				>
-					Contact
+					My Stuff
 				</button>
+
 				<button
 					class="bg-white text-black font-bold py-2 px-4 rounded"
 					on:click={() => switchPage('sounds')}
 					in:fly={{ duration: navigated ? 0 : 500, delay: navigated ? 0 : 3400, x: 50 }}
 				>
 					Sounds
+				</button>
+				<button
+					class="bg-white text-black font-bold py-2 px-4 rounded"
+					on:click={() => switchPage('contact')}
+					in:fly={{ duration: navigated ? 0 : 500, delay: navigated ? 0 : 3700, x: 50 }}
+				>
+					Contact
 				</button>
 			</span>
 		</div>
@@ -304,52 +337,50 @@
 			</button>
 		</div>
 	{/if}
-
-	{#if page == 'contact'}
+	{#if page == 'stuff'}
 		<div
-			class="flex justify-center items-center min-h-screen flex-col p-4"
+			class="flex justify-center items-center min-h-screen flex-col"
 			out:fade={{
 				duration: 500
 			}}
+			in:fade={{
+				duration: 1000
+			}}
 		>
 			<span in:fade={{ duration: 1000 }} class="flex items-center">
-				<h1 class="text-5xl font-bold text-white">Contact</h1></span
+				<h1 class="text-5xl font-bold text-white">My Stuff</h1></span
 			>
 
-			<span in:fade={{ duration: 1000, delay: 1000 }} class="flex items-center mt-2 gap-2">
-				<span class="text-white text-3xl text-center">
-					Only for real humans, no robots allowed!
-				</span>
-			</span>
-			<img
-				src="/mail.png"
-				class="mt-4 rotatehover overflow-hidden max-w-2xl"
-				alt="mail icon"
-				in:fade={{ duration: 1000, delay: 2000 }}
-			/>
-
-			<h2
-				class="text-white text-center mt-2 text-3xl font-bold"
-				in:fade={{ duration: 1000, delay: 4000 }}
+			<span
+				in:fade={{ duration: 1000, delay: 1000 }}
+				class="flex items-center mt-2 gap-2 text-white"
 			>
-				Links
-			</h2>
-
-			<span in:fade={{ duration: 1000, delay: 5000 }} class="flex items-center mt-2 gap-4 mb-4">
-				{#each links as link (link.url)}
-					<a
-						href={link.url}
-						target="_blank"
-						class="text-white text-2xl"
-						in:fade={{ duration: 1000, delay: 4500 }}><Fa icon={link.icon} /></a
+				{#each devices as device}
+					<div
+						class="flex flex-col items-center justify-center p-2 rounded bg-white text-black w-96"
 					>
+						<h2 class="text-center font-bold text-3xl">{device.device.name}</h2>
+						<div class="grid grid-cols-2">
+							{#each Object.entries(device.data) as [key, value]}
+								<div class="p-2">
+									<h2 class="text-center font-bold text-xl">{key}</h2>
+									{#if typeof value !== 'object'}
+										<p class="text-center">{value}</p>
+									{:else}
+										{#each Object.entries(value) as [key, value]}
+											<p class="text-center">{key}: {value}</p>
+										{/each}
+									{/if}
+								</div>
+							{/each}
+						</div>
+					</div>
 				{/each}
 			</span>
-
 			<button
 				class="bg-white text-black font-bold py-2 px-4 rounded mt-2"
+				in:fade={{ duration: 2000, delay: 2000 }}
 				on:click={() => switchPage('home')}
-				in:fade={{ duration: 1000, delay: 6000 }}
 			>
 				Back
 			</button>
@@ -399,6 +430,56 @@
 					There are currently {socketUsers} users connected.
 				</p>
 			{/if}
+
+			<button
+				class="bg-white text-black font-bold py-2 px-4 rounded mt-2"
+				on:click={() => switchPage('home')}
+				in:fade={{ duration: 1000, delay: 6000 }}
+			>
+				Back
+			</button>
+		</div>
+	{/if}
+	{#if page == 'contact'}
+		<div
+			class="flex justify-center items-center min-h-screen flex-col p-4"
+			out:fade={{
+				duration: 500
+			}}
+		>
+			<span in:fade={{ duration: 1000 }} class="flex items-center">
+				<h1 class="text-5xl font-bold text-white">Contact</h1></span
+			>
+
+			<span in:fade={{ duration: 1000, delay: 1000 }} class="flex items-center mt-2 gap-2">
+				<span class="text-white text-3xl text-center">
+					Only for real humans, no robots allowed!
+				</span>
+			</span>
+			<img
+				src="/mail.png"
+				class="mt-4 rotatehover overflow-hidden max-w-2xl"
+				alt="mail icon"
+				in:fade={{ duration: 1000, delay: 2000 }}
+			/>
+
+			<h2
+				class="text-white text-center mt-2 text-3xl font-bold"
+				in:fade={{ duration: 1000, delay: 4000 }}
+			>
+				Links
+			</h2>
+
+			<span in:fade={{ duration: 1000, delay: 5000 }} class="flex items-center mt-2 gap-4 mb-4">
+				{#each links as link (link.url)}
+					<a
+						href={link.url}
+						target="_blank"
+						class="text-white text-2xl"
+						in:fade={{ duration: 1000, delay: 4500 }}><Fa icon={link.icon} /></a
+					>
+				{/each}
+			</span>
 
 			<button
 				class="bg-white text-black font-bold py-2 px-4 rounded mt-2"
