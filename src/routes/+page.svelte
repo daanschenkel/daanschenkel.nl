@@ -87,10 +87,12 @@
 				for (let i = 0; i < devices.length; i++) {
 					if (devices[i].device.id == data.device.id) {
 						found = true;
+						if (data.offline) devices.splice(i, 1);
+
 						devices[i] = data;
 					}
 				}
-				if (!found) {
+				if (!found && !data.offline) {
 					devices = [...devices, data];
 				}
 			});
