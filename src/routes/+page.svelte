@@ -6,6 +6,7 @@
 	import { faEnvelope, faHeadphones, faFile } from '@fortawesome/free-solid-svg-icons';
 	import { faDiscord, faGithub, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 	import { io } from 'socket.io-client';
+	import { env } from '$env/dynamic/public';
 	const links = [
 		{
 			icon: faGithub,
@@ -53,7 +54,7 @@
 	let devices = [];
 	//page specific code
 	$: if (page == 'sounds') {
-		socket = io('https://sounds.daanschenkel.nl');
+		socket = io(env.PUBLIC_SOUNDS_SOCKET);
 		socket.on('connect', () => {
 			socketConnected = true;
 		});
@@ -66,7 +67,7 @@
 		});
 		socket.on('play', (data) => {
 			//load audio file
-			let audio = new Audio(`https://sounds.daanschenkel.nl/${data}.wav`);
+			let audio = new Audio(`${env.PUBLIC_SOUNDS_SOCKET}/${data}.wav`);
 			audio.play();
 		});
 		socket.on('users', (data) => {
@@ -75,7 +76,7 @@
 	}
 	$: if (page == 'stuff') {
 		if (!stuffSocket) {
-			stuffSocket = io('https://devices.daanschenkel.nl');
+			stuffSocket = io(env.PUBLIC_DEVICES_SOCKET);
 			stuffSocket.on('connect', () => {
 				stuffSocketConnected = true;
 			});
