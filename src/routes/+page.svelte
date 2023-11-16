@@ -7,6 +7,7 @@
 	import { faDiscord, faGithub, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 	import { io } from 'socket.io-client';
 	import { env } from '$env/dynamic/public';
+	import { goto } from '$app/navigation';
 	const links = [
 		{
 			icon: faGithub,
@@ -52,6 +53,7 @@
 	let navigated = false;
 	let stuffSocketConnected = false;
 	let devices = [];
+	let cachedAudios = {};
 	//page specific code
 	$: if (page == 'sounds') {
 		socket = io(env.PUBLIC_SOUNDS_SOCKET);
@@ -67,8 +69,11 @@
 		});
 		socket.on('play', (data) => {
 			//load audio file
-			let audio = new Audio(`${env.PUBLIC_SOUNDS_SOCKET}/${data}.wav`);
-			audio.play();
+			if (!cachedAudios[data])
+				cachedAudios[data] = new Audio(`${env.PUBLIC_SOUNDS_SOCKET}/${data}.wav`);
+
+			//play audio file
+			cachedAudios[data].play();
 		});
 		socket.on('users', (data) => {
 			socketUsers = data;
@@ -106,6 +111,8 @@
 		page = null;
 		mounted = false;
 		navigated = true;
+		if (newPage == 'home') goto(`/`);
+		else goto(`?page=${newPage}`);
 		setTimeout(() => {
 			page = newPage;
 			mounted = true;
@@ -175,20 +182,16 @@
 		</div></noscript
 	>
 {/if}
-<div class={`${socketConnected ? 'mt-4' : 'mt-0'} `}>
+<div>
 	{#if socketConnected}
-		<div
-			class="fixed top-0 left-0 right-0 z-50 min-w-full flex justify-center items-center bg-green-500"
+		<button
+			class="text-white text-center text-xl p-4 notif"
+			on:click={() => {
+				socket.disconnect();
+			}}
 		>
-			<button
-				class="text-white text-center text-xl p-4"
-				on:click={() => {
-					socket.disconnect();
-				}}
-			>
-				You are connected to the soundserver, click here to disconnect.
-			</button>
-		</div>
+			Disconnect from soundserver
+		</button>
 	{/if}
 	{#if page == 'home'}
 		<div
@@ -200,7 +203,7 @@
 		>
 			<span
 				in:fade={{ duration: navigated ? 0 : 1000, delay: navigated ? 0 : 300 }}
-				class="flex items-center gap-2 lg:flex-row flex-col"
+				class="flex items-center gap-2 lg:flex-row flex-col p-4"
 			>
 				<h1 class="text-5xl font-bold text-white wave">👋</h1>
 				<h1 class="text-5xl font-bold text-white text-center">
@@ -213,7 +216,7 @@
 			>
 				<h1 class="text-3xl text-white text-center">What brings you here today?</h1>
 			</span>
-			<span class="flex items-center mt-2 gap-2">
+			<span class="mt-2 gap-2 flex flex-row items-center flex-wrap justify-center">
 				<button
 					class="bg-white text-black font-bold py-2 px-4 rounded"
 					on:click={() => switchPage('about')}
@@ -263,11 +266,9 @@
 				duration: 1000
 			}}
 		>
-			<span in:fade={{ duration: 1000 }} class="flex items-center">
-				<h1 class="text-5xl font-bold text-white">About</h1></span
-			>
+			<span class="flex items-center"> <h1 class="text-5xl font-bold text-white">About</h1></span>
 
-			<span in:fade={{ duration: 1000, delay: 1000 }} class="flex items-center mt-2 gap-2">
+			<span class="flex items-center mt-2 gap-2">
 				<span class="text-white max-w-3xl text-center m-3">
 					Heya! My name is Daan, better known online as dandandev/DannyDanDan. I live in The
 					Netherlands. I also grew up and go to school there. I quickly discovered my obsession to
@@ -288,7 +289,6 @@
 			</span>
 			<button
 				class="bg-white text-black font-bold py-2 px-4 rounded mt-2"
-				in:fade={{ duration: 2000, delay: 5000 }}
 				on:click={() => switchPage('home')}
 			>
 				Back
@@ -315,7 +315,7 @@
 						<span
 							in:fly|global={{
 								duration: 500,
-								delay: 1500 + 200 * projects.indexOf(project),
+								delay: 2000 + 200 * projects.indexOf(project),
 								x: 50
 							}}
 							class="flex items-center flex-col text-center m-1 max-w-lg"
@@ -354,7 +354,7 @@
 
 			<span
 				in:fade={{ duration: 1000, delay: 1000 }}
-				class="flex items-center mt-2 gap-2 text-white"
+				class="flex items-center mt-4 gap-2 text-white"
 			>
 				{#if devices.length < 1}
 					<p class="text-center">None of my devices are currently connected.</p>
@@ -557,5 +557,24 @@
 		100% {
 			transform: rotate(-365deg);
 		}
+	}
+
+	.notif {
+		/*show small notification on top of the screen, when hovering, reveal entire thing*/
+		transition: all 0.5s ease-in-out;
+		top: -40px;
+
+		background-color: red;
+		position: fixed;
+		left: 0;
+		right: 0;
+		z-index: 999;
+		text-align: center;
+		max-height: 200px;
+
+		overflow: hidden;
+	}
+	.notif:hover {
+		top: 0px;
 	}
 </style>
