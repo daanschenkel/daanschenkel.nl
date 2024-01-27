@@ -24,7 +24,7 @@
 	let mouseCursors = [];
 	//page specific code
 	$: if (page == 'sounds') {
-		socket = io(env.PUBLIC_SOUNDS_SOCKET);
+		if (!socketConnected) socket = io(env.PUBLIC_SOUNDS_SOCKET);
 		socket.on('connect', () => {
 			socketConnected = true;
 		});
@@ -70,66 +70,62 @@
 			});
 		}
 	}
-	
+
 	onMount(() => {
 		mounted = true;
-		if($pageStore.url.searchParams.get('page'))
+		if ($pageStore.url.searchParams.get('page'))
 			switchPage($pageStore.url.searchParams.get('page'));
-else
-			switchPage('home');
-
+		else switchPage('home');
 
 		cursor.on('connect', () => {
 			console.log('connected to cursor server');
 		});
 
-	
-
-		cursor.on("new", (data) => {
-			mouseCursors = [...mouseCursors, {
-				id: data,
-				x: 0,
-				y: 0
-			
-			}
+		cursor.on('new', (data) => {
+			mouseCursors = [
+				...mouseCursors,
+				{
+					id: data,
+					x: 0,
+					y: 0
+				}
 			];
-
 		});
-		cursor.on("left", (data) => {
+		cursor.on('left', (data) => {
 			mouseCursors = mouseCursors.filter((cursor) => cursor.id !== data);
 		});
-		cursor.on("move", (data) => {
+		cursor.on('move', (data) => {
 			let found = false;
 			mouseCursors = mouseCursors.map((cursor) => {
-				if(cursor.id === data.id){
+				if (cursor.id === data.id) {
 					//generate x and y position based on remote and current screen size
-					cursor.x = data.x / data.screenX * window.innerWidth;
-					cursor.y = data.y / data.screenY * window.innerHeight;
+					cursor.x = (data.x / data.screenX) * window.innerWidth;
+					cursor.y = (data.y / data.screenY) * window.innerHeight;
 					cursor.page = data.page;
 					found = true;
 				}
 				return cursor;
 			});
-			if(!found){
-				mouseCursors = [...mouseCursors, {
-					id: data.id,
-					x: data.x / data.screenX * window.innerWidth,
-					y: data.y / data.screenY * window.innerHeight,
-					page: data.page
-				}
+			if (!found) {
+				mouseCursors = [
+					...mouseCursors,
+					{
+						id: data.id,
+						x: (data.x / data.screenX) * window.innerWidth,
+						y: (data.y / data.screenY) * window.innerHeight,
+						page: data.page
+					}
 				];
 			}
-
-
 		});
-		 
+
 		let lastMouse = new Date().getTime();
 
 		window.addEventListener('mousemove', (e) => {
-			if(new Date().getTime() - lastMouse < 100) return;
+			if (new Date().getTime() - lastMouse < 100) return;
 			lastMouse = new Date().getTime();
-			
-			cursor.emit("move", {
+
+			cursor.emit('move', {
 				x: e.clientX,
 				y: e.clientY,
 				screenX: window.innerWidth,
@@ -137,16 +133,18 @@ else
 				page: page
 			});
 		});
-
 	});
 	function switchPage(newPage) {
-		cursor.emit("move", {
-				x: 0,
-				y: 0,
-				screenX: window.innerWidth,
-				screenY: window.innerHeight,
-				page: newPage
-			});
+		cursor.emit('move', {
+			x: 0,
+			y: 0,
+			screenX: window.innerWidth,
+			screenY: window.innerHeight,
+			page: newPage
+		});
+
+		if (stuffSocket && newPage !== 'stuff') stuffSocket.disconnect();
+
 		page = null;
 		mounted = false;
 		navigated = true;
@@ -155,35 +153,48 @@ else
 		setTimeout(() => {
 			page = newPage;
 			mounted = true;
-			
 
-			if(newPage === "contact"){
-    setTimeout(async () => {
-        const canvas = document.getElementById('emailCanvas');
-        var ctx = canvas.getContext('2d');
+			if (newPage === 'contact') {
+				setTimeout(async () => {
+					const canvas = document.getElementById('emailCanvas');
+					var ctx = canvas.getContext('2d');
 
-        var email = 'daan@daanschenkel.nl';
+					var email = 'daan@daanschenkel.nl';
 
-        // Set the font and size
-        ctx.font = '20px Roboto'; 
+					// Set the font and size
+					ctx.font = '20px Roboto';
 
-        // Generate a random color for the background and the text
-        var bgColor = 'rgb(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ')';
-        var textColor = 'rgb(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ')';
+					// Generate a random color for the background and the text
+					var bgColor =
+						'rgb(' +
+						Math.floor(Math.random() * 256) +
+						',' +
+						Math.floor(Math.random() * 256) +
+						',' +
+						Math.floor(Math.random() * 256) +
+						')';
+					var textColor =
+						'rgb(' +
+						Math.floor(Math.random() * 256) +
+						',' +
+						Math.floor(Math.random() * 256) +
+						',' +
+						Math.floor(Math.random() * 256) +
+						')';
 
-        // Set the colors
-        ctx.fillStyle = bgColor;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = textColor;
+					// Set the colors
+					ctx.fillStyle = bgColor;
+					ctx.fillRect(0, 0, canvas.width, canvas.height);
+					ctx.fillStyle = textColor;
 
-        // Add some random distortion to the text
-        for (var i = 0; i < email.length; i++) {
-            ctx.setTransform(1, 0, Math.random() * 0.1, 1, 20 * i, 20 + Math.random() * 10);
-            ctx.fillText(email[i], 0, 0);
-            await new Promise(resolve => setTimeout(resolve, 100)); // Add delay here
-        }
-    }, 1000);
-}
+					// Add some random distortion to the text
+					for (var i = 0; i < email.length; i++) {
+						ctx.setTransform(1, 0, Math.random() * 0.1, 1, 20 * i, 20 + Math.random() * 10);
+						ctx.fillText(email[i], 0, 0);
+						await new Promise((resolve) => setTimeout(resolve, 100)); // Add delay here
+					}
+				}, 1000);
+			}
 		}, 501);
 	}
 	function daysUntilNext(month, day) {
@@ -288,17 +299,23 @@ else
 </script>
 
 {#each mouseCursors as cursor}
-{#if !(cursor.x === 0 && cursor.y === 0) && cursor.page === page}
-<p class="text-white text-center text-md p-4" style="position: absolute; left: {cursor.x}px; top: {cursor.y}px; pointer-events: none;"
-	out:fade={{ duration: 500}}
->
-	{cursor.id}
-</p>
-	<img src="/cursor.png" style="position: absolute; left: {cursor.x}px; top: {cursor.y}px; overflow: hidden; pointer-events: none;" 
-	out:fade={{ duration: 500}}
-		width="16" height="16" />
-	/>
-{/if}
+	{#if !(cursor.x === 0 && cursor.y === 0) && cursor.page === page}
+		<p
+			class="text-white text-center text-md p-4"
+			style="position: absolute; left: {cursor.x}px; top: {cursor.y}px; pointer-events: none;"
+			out:fade={{ duration: 500 }}
+		>
+			{cursor.id}
+		</p>
+		<img
+			src="/cursor.png"
+			style="position: absolute; left: {cursor.x}px; top: {cursor.y}px; overflow: hidden; pointer-events: none;"
+			out:fade={{ duration: 500 }}
+			width="16"
+			height="16"
+		/>
+		/>
+	{/if}
 {/each}
 
 {#if !page}
@@ -598,10 +615,7 @@ else
 					Only for real humans, no robots allowed!
 				</span>
 			</span>
-			<canvas class="mt-2" width="390" height="50"
-			id="emailCanvas"
-			
-			></canvas>
+			<canvas class="mt-2" width="390" height="50" id="emailCanvas" />
 
 			<h2
 				class="text-white text-center mt-2 text-3xl font-bold"
