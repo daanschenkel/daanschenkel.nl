@@ -88,36 +88,32 @@ else
 			mounted = true;
 
 			if(newPage === "contact"){
-				setTimeout(() => {
-				const canvas = document.getElementById('emailCanvas');
-				//draw email in captcha style    var canvas = document.getElementById('emailCanvas');
-    var ctx = canvas.getContext('2d');
+    setTimeout(async () => {
+        const canvas = document.getElementById('emailCanvas');
+        var ctx = canvas.getContext('2d');
 
-	var email = 'daan@daanschenkel.nl';
+        var email = 'daan@daanschenkel.nl';
 
-// Set the font and size
-ctx.font = '20px Arial'; // Adjust the font size to fit the canvas
+        // Set the font and size
+        ctx.font = '20px Roboto'; 
 
-// Generate a random color for the background and the text
-var bgColor = 'rgb(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ')';
-var textColor = 'rgb(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ')';
+        // Generate a random color for the background and the text
+        var bgColor = 'rgb(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ')';
+        var textColor = 'rgb(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ')';
 
-// Set the colors
-ctx.fillStyle = bgColor;
-ctx.fillRect(0, 0, canvas.width, canvas.height);
-ctx.fillStyle = textColor;
+        // Set the colors
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = textColor;
 
-// Add some random distortion to the text
-for (var i = 0; i < email.length; i++) {
-	ctx.setTransform(1, 0, Math.random() * 0.1, 1, 20 * i, 20 + Math.random() * 10); // Adjust the positioning and distortion to fit the canvas
-	ctx.fillText(email[i], 0, 0);
+        // Add some random distortion to the text
+        for (var i = 0; i < email.length; i++) {
+            ctx.setTransform(1, 0, Math.random() * 0.1, 1, 20 * i, 20 + Math.random() * 10);
+            ctx.fillText(email[i], 0, 0);
+            await new Promise(resolve => setTimeout(resolve, 100)); // Add delay here
+        }
+    }, 1000);
 }
-}, 1000);
-
-
-				
-				
-			}
 		}, 501);
 	}
 	function daysUntilNext(month, day) {
