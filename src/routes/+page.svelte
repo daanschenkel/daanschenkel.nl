@@ -581,7 +581,7 @@
 				placeholder="Leave a message for Danny!"
 				on:keydown={(e) => {
 					if (e.key === 'Enter') {
-						socket.emit('message', e.target.value);
+						socket.emit('msg', e.target.value);
 						e.target.value = '';
 					}
 				}}
