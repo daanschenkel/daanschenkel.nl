@@ -300,13 +300,6 @@
 
 {#each mouseCursors as cursor}
 	{#if !(cursor.x === 0 && cursor.y === 0) && cursor.page === page}
-		<p
-			class="text-white text-center text-md p-4"
-			style="position: absolute; left: {cursor.x}px; top: {cursor.y}px; pointer-events: none;"
-			out:fade={{ duration: 500 }}
-		>
-			{cursor.id}
-		</p>
 		<img
 			src="/cursor.png"
 			style="position: absolute; left: {cursor.x}px; top: {cursor.y}px; overflow: hidden; pointer-events: none;"
