@@ -8,6 +8,7 @@
 	import { io } from 'socket.io-client';
 	import { env } from '$env/dynamic/public';
 	import { goto } from '$app/navigation';
+	const cursor = io(env.PUBLIC_CURSORS_SOCKET);
 
 	let page;
 	let mounted = false;
@@ -20,6 +21,7 @@
 	let stuffSocketConnected = false;
 	let devices = [];
 	let cachedAudios = {};
+	let mouseCursors = [];
 	//page specific code
 	$: if (page == 'sounds') {
 		socket = io(env.PUBLIC_SOUNDS_SOCKET);
@@ -75,9 +77,76 @@
 			switchPage($pageStore.url.searchParams.get('page'));
 else
 			switchPage('home');
+
+
+		cursor.on('connect', () => {
+			console.log('connected to cursor server');
+		});
+
+	
+
+		cursor.on("new", (data) => {
+			mouseCursors = [...mouseCursors, {
+				id: data,
+				x: 0,
+				y: 0
 			
+			}
+			];
+
+		});
+		cursor.on("left", (data) => {
+			mouseCursors = mouseCursors.filter((cursor) => cursor.id !== data);
+		});
+		cursor.on("move", (data) => {
+			let found = false;
+			mouseCursors = mouseCursors.map((cursor) => {
+				if(cursor.id === data.id){
+					//generate x and y position based on remote and current screen size
+					cursor.x = data.x / data.screenX * window.innerWidth;
+					cursor.y = data.y / data.screenY * window.innerHeight;
+					cursor.page = data.page;
+					found = true;
+				}
+				return cursor;
+			});
+			if(!found){
+				mouseCursors = [...mouseCursors, {
+					id: data.id,
+					x: data.x / data.screenX * window.innerWidth,
+					y: data.y / data.screenY * window.innerHeight,
+					page: data.page
+				}
+				];
+			}
+
+
+		});
+		 
+		let lastMouse = new Date().getTime();
+
+		window.addEventListener('mousemove', (e) => {
+			if(new Date().getTime() - lastMouse < 100) return;
+			lastMouse = new Date().getTime();
+			
+			cursor.emit("move", {
+				x: e.clientX,
+				y: e.clientY,
+				screenX: window.innerWidth,
+				screenY: window.innerHeight,
+				page: page
+			});
+		});
+
 	});
 	function switchPage(newPage) {
+		cursor.emit("move", {
+				x: 0,
+				y: 0,
+				screenX: window.innerWidth,
+				screenY: window.innerHeight,
+				page: newPage
+			});
 		page = null;
 		mounted = false;
 		navigated = true;
@@ -86,6 +155,7 @@ else
 		setTimeout(() => {
 			page = newPage;
 			mounted = true;
+			
 
 			if(newPage === "contact"){
     setTimeout(async () => {
@@ -216,6 +286,20 @@ else
 		}
 	];
 </script>
+
+{#each mouseCursors as cursor}
+{#if !(cursor.x === 0 && cursor.y === 0) && cursor.page === page}
+<p class="text-white text-center text-md p-4" style="position: absolute; left: {cursor.x}px; top: {cursor.y}px; pointer-events: none;"
+	out:fade={{ duration: 500}}
+>
+	{cursor.id}
+</p>
+	<img src="/cursor.png" style="position: absolute; left: {cursor.x}px; top: {cursor.y}px; overflow: hidden; pointer-events: none;" 
+	out:fade={{ duration: 500}}
+		width="16" height="16" />
+	/>
+{/if}
+{/each}
 
 {#if !page}
 	<noscript>
