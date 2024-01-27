@@ -575,6 +575,18 @@
 				{/each}
 			</span>
 
+			<input
+				type="text"
+				class="bg-white text-black font-bold py-2 px-4 rounded mt-2"
+				placeholder="Leave a message for Danny!"
+				on:keydown={(e) => {
+					if (e.key === 'Enter') {
+						socket.emit('message', e.target.value);
+						e.target.value = '';
+					}
+				}}
+			/>
+
 			{#if socketConnected && socketUsers > 0}
 				<p class="text-white text-center text-md p-4" in:fade={{ duration: 1000, delay: 3000 }}>
 					There are currently {socketUsers} users connected.
