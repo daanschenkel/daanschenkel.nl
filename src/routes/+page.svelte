@@ -141,7 +141,10 @@
 			page: newPage
 		});
 
-		if (stuffSocket && newPage !== 'stuff') stuffSocket.disconnect();
+		if (stuffSocket && newPage !== 'stuff') {
+			stuffSocket.disconnect();
+			stuffSocket = null;
+		}
 
 		page = null;
 		mounted = false;
