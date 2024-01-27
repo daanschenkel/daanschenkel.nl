@@ -8,41 +8,7 @@
 	import { io } from 'socket.io-client';
 	import { env } from '$env/dynamic/public';
 	import { goto } from '$app/navigation';
-	const links = [
-		{
-			icon: faGithub,
-			name: 'GitHub',
-			url: 'https://github.com/daanschenkel'
-		},
 
-		{
-			icon: faHeadphones,
-			name: 'Last.fm',
-			url: 'https://www.last.fm/user/DannyDanDan_'
-		},
-
-		{
-			icon: faDiscord,
-			name: 'Discord',
-			url: 'https://discord.com/users/654390669472694284'
-		},
-
-		{
-			icon: faLinkedin,
-			name: 'LinkedIn',
-			url: 'https://www.linkedin.com/in/daan-schenkel-b65726226/'
-		},
-		{
-			icon: faEnvelope,
-			name: 'Email',
-			url: 'mailto:web@dannydandan.anonaddy.com'
-		},
-		{
-			icon: faFile,
-			name: 'Resume',
-			url: '/resume.pdf'
-		}
-	];
 	let page;
 	let mounted = false;
 	let socket;
@@ -102,10 +68,14 @@
 			});
 		}
 	}
-
+	
 	onMount(() => {
 		mounted = true;
-		page = $pageStore.url.searchParams.get('page') || 'home';
+		if($pageStore.url.searchParams.get('page'))
+			switchPage($pageStore.url.searchParams.get('page'));
+else
+			switchPage('home');
+			
 	});
 	function switchPage(newPage) {
 		page = null;
@@ -116,6 +86,38 @@
 		setTimeout(() => {
 			page = newPage;
 			mounted = true;
+
+			if(newPage === "contact"){
+				setTimeout(() => {
+				const canvas = document.getElementById('emailCanvas');
+				//draw email in captcha style    var canvas = document.getElementById('emailCanvas');
+    var ctx = canvas.getContext('2d');
+
+	var email = 'daan@daanschenkel.nl';
+
+// Set the font and size
+ctx.font = '20px Arial'; // Adjust the font size to fit the canvas
+
+// Generate a random color for the background and the text
+var bgColor = 'rgb(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ')';
+var textColor = 'rgb(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ')';
+
+// Set the colors
+ctx.fillStyle = bgColor;
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+ctx.fillStyle = textColor;
+
+// Add some random distortion to the text
+for (var i = 0; i < email.length; i++) {
+	ctx.setTransform(1, 0, Math.random() * 0.1, 1, 20 * i, 20 + Math.random() * 10); // Adjust the positioning and distortion to fit the canvas
+	ctx.fillText(email[i], 0, 0);
+}
+}, 1000);
+
+
+				
+				
+			}
 		}, 501);
 	}
 	function daysUntilNext(month, day) {
@@ -126,6 +128,47 @@
 		if (tday > next) next.setFullYear(y + 1);
 		return Math.round((next - tday) / 8.64e7);
 	}
+
+	const links = [
+		{
+			icon: faGithub,
+			name: 'GitHub',
+			url: 'https://github.com/daanschenkel'
+		},
+
+		{
+			icon: faHeadphones,
+			name: 'Last.fm',
+			url: 'https://www.last.fm/user/DannyDanDan_'
+		},
+
+		{
+			icon: faDiscord,
+			name: 'Discord',
+			url: 'https://discord.com/users/654390669472694284'
+		},
+
+		{
+			icon: faLinkedin,
+			name: 'LinkedIn',
+			url: 'https://www.linkedin.com/in/daan-schenkel-b65726226/'
+		},
+		{
+			icon: faEnvelope,
+			name: 'Email',
+			url: 'mailto:web@dannydandan.anonaddy.com'
+		},
+		{
+			icon: faFile,
+			name: 'Resume',
+			onClick: () => {
+				alert(
+					'I guess my project page is kind of my resume? Fun fact: You can do Ctrl+P to print it!'
+				);
+				switchPage('projects');
+			}
+		}
+	];
 
 	const projects = [
 		{
@@ -475,12 +518,10 @@
 					Only for real humans, no robots allowed!
 				</span>
 			</span>
-			<img
-				src="/mail.png"
-				class="mt-4 rotatehover overflow-hidden max-w-2xl"
-				alt="mail icon"
-				in:fade={{ duration: 1000, delay: 2000 }}
-			/>
+			<canvas class="mt-2" width="390" height="50"
+			id="emailCanvas"
+			
+			></canvas>
 
 			<h2
 				class="text-white text-center mt-2 text-3xl font-bold"
@@ -492,7 +533,8 @@
 			<span in:fade={{ duration: 1000, delay: 5000 }} class="flex items-center mt-2 gap-4 mb-4">
 				{#each links as link (link.url)}
 					<a
-						href={link.url}
+						href={link.url || '#'}
+						on:click={link.onClick}
 						target="_blank"
 						class="text-white text-2xl"
 						in:fade={{ duration: 1000, delay: 4500 }}><Fa icon={link.icon} /></a
