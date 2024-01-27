@@ -12,7 +12,7 @@
 
 	let page;
 	let mounted = false;
-	let socket;
+	let socket = io(env.PUBLIC_SOUNDS_SOCKET);
 	let stuffSocket;
 	let socketConnected = false;
 	let sounds = [];
@@ -23,30 +23,28 @@
 	let cachedAudios = {};
 	let mouseCursors = [];
 	//page specific code
-	$: if (page == 'sounds') {
-		if (!socketConnected) socket = io(env.PUBLIC_SOUNDS_SOCKET);
-		socket.on('connect', () => {
-			socketConnected = true;
-		});
-		socket.on('disconnect', () => {
-			socketConnected = false;
-			sounds = [];
-		});
-		socket.on('list', (data) => {
-			sounds = data;
-		});
-		socket.on('play', (data) => {
-			//load audio file
-			if (!cachedAudios[data])
-				cachedAudios[data] = new Audio(`${env.PUBLIC_SOUNDS_SOCKET}/${data}.wav`);
+	socket.on('connect', () => {
+		socketConnected = true;
+	});
+	socket.on('disconnect', () => {
+		socketConnected = false;
+		sounds = [];
+	});
+	socket.on('list', (data) => {
+		sounds = data;
+	});
+	socket.on('play', (data) => {
+		//load audio file
+		if (!cachedAudios[data])
+			cachedAudios[data] = new Audio(`${env.PUBLIC_SOUNDS_SOCKET}/${data}.wav`);
 
-			//play audio file
-			cachedAudios[data].play();
-		});
-		socket.on('users', (data) => {
-			socketUsers = data;
-		});
-	}
+		//play audio file
+		cachedAudios[data].play();
+	});
+	socket.on('users', (data) => {
+		socketUsers = data;
+	});
+
 	$: if (page == 'stuff') {
 		if (!stuffSocket) {
 			stuffSocket = io(env.PUBLIC_DEVICES_SOCKET);
