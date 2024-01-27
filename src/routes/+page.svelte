@@ -139,35 +139,41 @@
 			description:
 				'A website where people can upload images and share them easily.<br/><a href="https://karen.pics" target="_blank" class="underline">Visit the website</a>'
 		},
-		{
-			name: 'SeasonMC',
-			description:
-				'Developer for the Minecraft server SeasonMC. Developed Minecraft plugins. Also made business decisions.'
-		},
-		{
-			name: 'Snowcloud',
-			description:
-				'Created a web portal where users could notify of their absence, see the staff list, view banned users, Give users strikes, appeal them, Demote/promote them and much more.'
-		},
-		{
-			name: 'Minecraft Quest',
-			description:
-				'Developing a website that shows users a bingocard, and lets them complete it in Minecraft. The 2 systems are linked to each other using Java and web APIs. This would automate (almost) the entire event.'
-		},
+
 		{
 			name: 'P.E.T.S',
 			description:
 				'Made and maintains the online learning environment and website for P.E.T.S.<br/><a href="https://petsproject.nl" target="_blank" class="underline">Visit the website</a>'
 		},
 		{
-			name: 'is-a.dev',
+			name: 'VIPS TV',
 			description:
-				'Working on the register site, analytics and web hosting.<br/><a href="https://manage.is-a.dev" target="_blank" class="underline">Visit the website</a>'
+				"Made and maintains the website for VIPS TV.<br/><a href='https://vipstv.nl' target='_blank' class='underline'>Visit the website</a>"
 		},
 		{
-			name: 'Bakfiets',
+			name: 'is-a.dev',
 			description:
-				'Making an app with live follow feature, ordering, payments and more. Coming Soon'
+				'Developed an open-source register site, linked with analytics and web hosting.<br/><a href="https://manage.is-a.dev" target="_blank" class="underline">Visit the website</a>'
+		},
+		{
+			name: 'Cycling 4 Climate',
+			description:
+				"Doing voluntary work for Cycling 4 Climate. Managing GSuite/Google Workspace, servers, AWS, etc.<br/><a href='https://cycling4climate.nl' target='_blank' class='underline'>Visit the website</a>"
+		},
+		{
+			name: 'League-FM',
+			description:
+				"Wrote the internal management system and the backend for the public site.<br/><a href='https://league-fm.nl' target='_blank' class='underline'>Visit the website</a>"
+		},
+		{
+			name: 'Fit in a Box',
+			description:
+				"Developed an app for Fit in a Box, a company that makes custom boxes to keep you fit.<br/><a href='https://kickboksengroningen.nl/fit-in-a-box' target='_blank' class='underline'>Visit the website</a>"
+		},
+		{
+			name: 'Hexi Development',
+			description:
+				"Developed multiple applications & reverse-engineered APIs for Hexi Development.<br/><a href='https://hexidev.nl' target='_blank' class='underline'>Visit the website</a>"
 		}
 	];
 </script>
