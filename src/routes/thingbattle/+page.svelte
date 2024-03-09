@@ -76,6 +76,7 @@
 ><button>Results</button></a>
 <div class="choose">
     Thing Battle
+    <p>Fight disputes that no-one has ever had!</p>
  </div>
 <div class="divider">
 <button class="thing" style="background-image: url('{env.PUBLIC_CHOICES_API}/{thing1.replace(" ", "_").toLowerCase()}.png')"
@@ -171,7 +172,12 @@
             z-index: 1;
             font-weight: bold;
             font-family: 'Arial';
+            text-align: center;
 
+    }
+
+    .choose p {
+        font-size: 0.5em;
     }
 
     .or {
@@ -216,6 +222,11 @@
             width: 100%;
             text-align: center;
         }
+
+        .choose p {
+            display: none;
+        }
+
         .or {
             top: 50%;
             transform: translate(-50%, -50%);
@@ -230,10 +241,10 @@
 
        /*back and results under title*/
         .back {
-            margin-top: 80px;
+            margin-top: 100px;
         }
         .results {
-            margin-top: 80px;
+            margin-top: 100px;
         }
 
         
