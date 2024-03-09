@@ -22,6 +22,41 @@
 	let devices = [];
 	let cachedAudios = {};
 	let mouseCursors = [];
+
+	function drawCanvas(){
+		const canvas = document.getElementById('emailCanvas');
+					var ctx = canvas.getContext('2d');
+
+					//clear canvas
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+					var email = 'daan@daanschenkel.nl';
+
+					// Set the font and size
+					ctx.font = '20px Roboto';
+
+					//background
+					ctx.fillStyle = 'white';
+
+					//nmake background out of random characters in the email, position from top left to bottom right
+					for (let i = 0; i < 200; i++) {
+						ctx.fillText(
+							email[Math.floor(Math.random() * email.length)],
+							Math.random() * canvas.width,
+							Math.random() * canvas.height
+						);
+					}
+					//draw the text big and bold, with each letter in a different color and a black border around it
+					ctx.font = 'bold 20px Roboto';
+					for (let i = 0; i < email.length; i++) {
+						ctx.fillStyle = `hsl(${(Math.random() * 360) | 0}, 100%, 50%)`;
+						ctx.strokeStyle = 'black';
+						ctx.lineWidth = 10;
+						ctx.strokeText(email[i], i * 20, 30);
+						ctx.fillText(email[i], i * 20, 30);
+					}	
+				}
+
 	//page specific code
 	socket.on('connect', () => {
 		socketConnected = true;
@@ -158,43 +193,10 @@
 
 			if (newPage === 'contact') {
 				setTimeout(async () => {
-					const canvas = document.getElementById('emailCanvas');
-					var ctx = canvas.getContext('2d');
+				drawCanvas();
 
-					var email = 'daan@daanschenkel.nl';
 
-					// Set the font and size
-					ctx.font = '20px Roboto';
 
-					// Generate a random color for the background and the text
-					var bgColor =
-						'rgb(' +
-						Math.floor(Math.random() * 256) +
-						',' +
-						Math.floor(Math.random() * 256) +
-						',' +
-						Math.floor(Math.random() * 256) +
-						')';
-					var textColor =
-						'rgb(' +
-						Math.floor(Math.random() * 256) +
-						',' +
-						Math.floor(Math.random() * 256) +
-						',' +
-						Math.floor(Math.random() * 256) +
-						')';
-
-					// Set the colors
-					ctx.fillStyle = bgColor;
-					ctx.fillRect(0, 0, canvas.width, canvas.height);
-					ctx.fillStyle = textColor;
-
-					// Add some random distortion to the text
-					for (var i = 0; i < email.length; i++) {
-						ctx.setTransform(1, 0, Math.random() * 0.1, 1, 20 * i, 20 + Math.random() * 10);
-						ctx.fillText(email[i], 0, 0);
-						await new Promise((resolve) => setTimeout(resolve, 100)); // Add delay here
-					}
 				}, 1000);
 			}
 		}, 501);
@@ -232,11 +234,7 @@
 			name: 'LinkedIn',
 			url: 'https://www.linkedin.com/in/daan-schenkel-b65726226/'
 		},
-		{
-			icon: faEnvelope,
-			name: 'Email',
-			url: 'mailto:web@dannydandan.anonaddy.com'
-		},
+
 		{
 			icon: faFile,
 			name: 'Resume',
@@ -245,7 +243,8 @@
 					'I guess my project page is kind of my resume? Fun fact: You can do Ctrl+P to print it!'
 				);
 				switchPage('projects');
-			}
+			},
+			url: '#'
 		}
 	];
 
@@ -553,20 +552,23 @@
 			out:fade={{
 				duration: 500
 			}}
+			in:fade={{
+				duration: 1000
+			}}
 		>
-			<span in:fade={{ duration: 1000 }} class="flex items-center">
+			<span class="flex items-center">
 				<h1 class="text-5xl font-bold text-white">Sounds</h1></span
 			>
 
-			<span in:fade={{ duration: 1000, delay: 1000 }} class="flex items-center mt-2 gap-2">
+			<span  class="flex items-center mt-2 gap-2">
 				<span class="text-white text-3xl text-center">
 					Annoy me by playing sounds on my computer!
 				</span>
 			</span>
-			<span in:fade={{ duration: 1000, delay: 2000 }} class="flex items-center mt-2 gap-2">
+			<span  class="flex items-center mt-2 gap-2">
 				<div class="flex justify-center items-center flex-col">
 					{#if !socketConnected || sounds.length < 1}
-						<span in:fade={{ duration: 1000, delay: 2000 }} class="flex items-center mt-2 gap-2">
+						<span  class="flex items-center mt-2 gap-2">
 							<button class="text-white text-center mt-2 text-xl" on:click={() => socket.connect()}>
 								I cant seem to connect to the soundserver. Danny's probably asleep/offline. Click to
 								retry
@@ -575,12 +577,12 @@
 					{/if}
 				</div>
 			</span>
-			<span class="grid grid-cols-3 gap-4 mt-4">
+			<span class="grid grid-cols-3 gap-4 mt-4"
+			>
 				{#each sounds as sound (sound)}
 					<button
 						target="_blank"
 						class="bg-white text-black font-bold py-2 px-4 rounded"
-						in:fly={{ duration: 1000, delay: 2000 + 200 * sounds.indexOf(sound), x: 50 }}
 						on:click={() => socket.emit('play', sound.split('.')[0])}>{sound.split('.')[0]}</button
 					>
 				{/each}
@@ -599,7 +601,7 @@
 			/>
 
 			{#if socketConnected && socketUsers > 0}
-				<p class="text-white text-center text-md p-4" in:fade={{ duration: 1000, delay: 3000 }}>
+				<p class="text-white text-center text-md p-4" >
 					There are currently {socketUsers} users connected.
 				</p>
 			{/if}
@@ -607,7 +609,6 @@
 			<button
 				class="bg-white text-black font-bold py-2 px-4 rounded mt-2"
 				on:click={() => switchPage('home')}
-				in:fade={{ duration: 1000, delay: 6000 }}
 			>
 				Back
 			</button>
@@ -629,16 +630,26 @@
 					Only for real humans, no robots allowed!
 				</span>
 			</span>
-			<canvas class="mt-2" width="390" height="50" id="emailCanvas" />
+			<canvas class="mt-2" width="400" height="50" id="emailCanvas"
+				in:fade={{ duration: 1000, delay: 1000 }}
+			/>
+			<button class="text-white text-center mt-2 text-md"
+				on:click={() => {
+					drawCanvas();
+				}}
+				in:fade={{ duration: 1000, delay: 1000 }}
+			>
+			unreadable?
+			</button>
 
 			<h2
 				class="text-white text-center mt-2 text-3xl font-bold"
-				in:fade={{ duration: 1000, delay: 4000 }}
+				in:fade={{ duration: 1000, delay: 3000 }}
 			>
 				Links
 			</h2>
 
-			<span in:fade={{ duration: 1000, delay: 5000 }} class="flex items-center mt-2 gap-4 mb-4">
+			<span in:fade={{ duration: 1000, delay: 4000 }} class="flex items-center mt-2 gap-4 mb-4">
 				{#each links as link (link.url)}
 					<a
 						href={link.url || '#'}
@@ -653,7 +664,7 @@
 			<button
 				class="bg-white text-black font-bold py-2 px-4 rounded mt-2"
 				on:click={() => switchPage('home')}
-				in:fade={{ duration: 1000, delay: 6000 }}
+				in:fade={{ duration: 1000, delay: 5000 }}
 			>
 				Back
 			</button>
