@@ -154,6 +154,7 @@
 		setTimeout(() => {
 			page = newPage;
 			mounted = true;
+			if(newPage == 'choices') goto(`/thingbattle`)
 
 			if (newPage === 'contact') {
 				setTimeout(async () => {
@@ -385,6 +386,13 @@
 					in:fly={{ duration: navigated ? 0 : 500, delay: navigated ? 0 : 3400, x: 50 }}
 				>
 					Sounds
+				</button>
+				<button
+					class="bg-white text-black font-bold py-2 px-4 rounded"
+					on:click={() => switchPage('choices')}
+					in:fly={{ duration: navigated ? 0 : 500, delay: navigated ? 0 : 3400, x: 50 }}
+				>
+					Choices
 				</button>
 				<button
 					class="bg-white text-black font-bold py-2 px-4 rounded"
