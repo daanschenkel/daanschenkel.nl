@@ -6,14 +6,67 @@
 	import Page from "../+page.svelte";
     let data = [];
     let out = true;
+    let running = false;
+    function loadImages(){
+               data.map((item) => {
+                    if(item.loaded){
+                        return;
+                    }
+                    const el = document.querySelector(`[style*="${item.thing.replace(" ", "_").toLowerCase()}.png"]`);
+
+                  
+
+                    if(el){
+                        const rect = el.getBoundingClientRect();
+                        if(rect.top < window.innerHeight && rect.bottom > 0){
+                            //preload
+                            const img = new Image();
+                            img.src = `${env.PUBLIC_CHOICES_API}/${item.thing.replace(" ", "_").toLowerCase()}.png`;
+
+                            img.onload = () => {
+                                item.loaded = true;
+                                data = [...data];
+                            }
+                            }
+                    }
+                });
+
+            }
+
 async function load(){
+    if(running){
+        return;
+    }
+    running = true;
         const response = await fetch(`${env.PUBLIC_CHOICES_API}/results`);
         data = await response.json();
         out = false;
+
+
+        if(typeof window === "undefined"){
+            return;
+        }
+
+        
+            //on scroll, load all in view results
+            window.addEventListener("scroll", () => {
+                loadImages();
+            });
+        
+            setTimeout(() => {
+                loadImages();
+            }, 1000);
+
 }
+
 load();
     
+
+
+
 </script>
+
+
 
 {#if out}
 <div class="transition" in:fade={{duration: 500}} 
@@ -31,9 +84,12 @@ on:click|preventDefault={() => {
 ><button>Back</button></a>
 <h1>Results</h1>
 <div class="results">
+
+ 
+
 {#each data as item}
     <div 
-        style="background-image: url('{env.PUBLIC_CHOICES_API}/{item.thing.replace(" ", "_").toLowerCase()}.png')"
+        style="background-image: url('{env.PUBLIC_CHOICES_API}{item.loaded ? "/" : "/l/"}{item.thing.replace(" ", "_").toLowerCase()}.png"
         class="result"
         on:mouseenter={() => {
            item.hover = true;
@@ -41,6 +97,8 @@ on:click|preventDefault={() => {
         on:mouseleave={() => {
             item.hover = false;
         }}
+       
+
     >
     <div class="thing-overlay">
         <h2>{item.thing}</h2>
