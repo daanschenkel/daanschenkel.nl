@@ -12,7 +12,7 @@
                     if(item.loaded){
                         return;
                     }
-                    const el = document.querySelector(`[style*="${item.thing.replace(" ", "_").toLowerCase()}.png"]`);
+                    const el = document.querySelector(`[style*="${item.thing.replaceAll(" ", "_").toLowerCase()}.png"]`);
 
                   
 
@@ -21,7 +21,7 @@
                         if(rect.top < window.innerHeight && rect.bottom > 0){
                             //preload
                             const img = new Image();
-                            img.src = `${env.PUBLIC_CHOICES_API}/${item.thing.replace(" ", "_").toLowerCase()}.png`;
+                            img.src = `${env.PUBLIC_CHOICES_API}/${item.thing.replaceAll(" ", "_").toLowerCase()}.png`;
 
                             img.onload = () => {
                                 item.loaded = true;
@@ -89,7 +89,7 @@ on:click|preventDefault={() => {
 
 {#each data as item}
     <div 
-        style="background-image: url('{env.PUBLIC_CHOICES_API}{item.loaded ? "/" : "/l/"}{item.thing.replace(" ", "_").toLowerCase()}.png"
+        style="background-image: url('{env.PUBLIC_CHOICES_API}{item.loaded ? "/" : "/l/"}{item.thing.replaceAll(" ", "_").toLowerCase()}.png"
         class="result"
         on:mouseenter={() => {
            item.hover = true;
