@@ -22,8 +22,8 @@
         const data = await response.json();
 
         //preload images
-        preload1.src = `${env.PUBLIC_CHOICES_API}/${data.item1.replace(" ", "_").toLowerCase()}.png`;
-        preload2.src = `${env.PUBLIC_CHOICES_API}/${data.item2.replace(" ", "_").toLowerCase()}.png`;
+        preload1.src = `${env.PUBLIC_CHOICES_API}/${data.item1.replaceAll(" ", "_").toLowerCase()}.png`;
+        preload2.src = `${env.PUBLIC_CHOICES_API}/${data.item2.replaceAll(" ", "_").toLowerCase()}.png`;
 
         //wait for images to load
         await new Promise((resolve) => {
@@ -116,7 +116,7 @@
     <p>Fight disputes that no-one has ever had!</p>
  </div>
 <div class="divider">
-<button class="thing" style="background-image: url('{env.PUBLIC_CHOICES_API}/{thing1.replace(" ", "_").toLowerCase()}.png')"
+<button class="thing" style="background-image: url('{env.PUBLIC_CHOICES_API}/{thing1.replaceAll(" ", "_").toLowerCase()}.png')"
     on:click={() => vote(thing1)}
         disabled={voting}
     >
@@ -154,7 +154,7 @@
     >Next</button>
     {/if}
     </div>
-<button class="thing" style="background-image: url('{env.PUBLIC_CHOICES_API}/{thing2.replace(" ", "_").toLowerCase()}.png')"
+<button class="thing" style="background-image: url('{env.PUBLIC_CHOICES_API}/{thing2.replaceAll(" ", "_").toLowerCase()}.png')"
     on:click={() => vote(thing2)}        disabled={voting}
 
 >
