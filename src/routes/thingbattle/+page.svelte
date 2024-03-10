@@ -1,7 +1,7 @@
 <script>
     import {env} from "$env/dynamic/public";
     import { onMount } from "svelte";
-    import {fade} from "svelte/transition";
+    import {fade, fly,draw} from "svelte/transition";
     import {goto} from "$app/navigation";
     let thing1 = "";
     let thing2 = "";
@@ -11,14 +11,43 @@
     let out = true;
 
     async function random(){
+        let preload1 = new Image();
+        let preload2 = new Image();
+
+
         voting = false;
         thing1Percentages = null;
         thing2Percentages = null;
         const response = await fetch(`${env.PUBLIC_CHOICES_API}/random`);
         const data = await response.json();
+
+        //preload images
+        preload1.src = `${env.PUBLIC_CHOICES_API}/${data.item1.replace(" ", "_").toLowerCase()}.png`;
+        preload2.src = `${env.PUBLIC_CHOICES_API}/${data.item2.replace(" ", "_").toLowerCase()}.png`;
+
+        //wait for images to load
+        await new Promise((resolve) => {
+         let loaded = 0;
+            preload1.onload = () => {
+                loaded++;
+                if(loaded === 2){
+                    resolve();
+                }
+            }
+            preload2.onload = () => {
+                loaded++;
+                if(loaded === 2){
+                    resolve();
+                }
+            }
+        });
+
+
         thing1 = data.item1;
         thing2 = data.item2;
     }
+
+
 
     async function vote(item){
         voting = true;
@@ -35,23 +64,31 @@
         const data = await response.json();
 
         if(item === thing1){
-          thing1Percentages = data.chosenPercentage || 0;
-            thing2Percentages = data.otherPercentage || 0;
+          thing1Percentages = data.chosenPercentage === null ? 0 : data.chosenPercentage;
+            thing2Percentages = data.otherPercentage === null ? 0 : data.otherPercentage;
         } else {
-            thing2Percentages = data.chosenPercentage || 0;
-            thing1Percentages = data.otherPercentage || 0; 
+            thing2Percentages = data.chosenPercentage === null ? 0 : data.chosenPercentage;
+            thing1Percentages = data.otherPercentage === null ? 0 : data.otherPercentage;
         }
 
+        console.log(thing1Percentages, thing2Percentages)
         
     }
 
     async function load(){
+        if(typeof document === "undefined"){
+            return;
+        }
         await random();
         out = false;
     }
 
     load();
+
+
+
 </script>
+
 
 {#if out}
 <div class="transition" in:fade={{duration: 500}} 
@@ -87,8 +124,11 @@
  
     <div class="thing-overlay">
         <h1>{thing1}</h1>
-        {#if thing1Percentages}
-            <h2>{thing1Percentages}%</h2>
+        {#if thing1Percentages !== null}
+            <h2
+                in:fly={{duration: 200, y: 50}}
+                out:fly={{duration: 200, y: 50}}
+            >{thing1Percentages}%</h2>
         {/if}
     </div>
 </button>
@@ -96,7 +136,10 @@
 <div class="or">
     {#if !thing1Percentages && !thing2Percentages}
  
-    <h1>
+    <h1
+        in:fly={{x: -100, duration: 200, delay: 201}}
+        out:fly={{x: -100, duration: 200}}
+    >
         {#if thing1 && thing2}
             or
         {:else}
@@ -104,7 +147,11 @@
         {/if}
     </h1>
     {:else}
-    <button on:click={random} class="next">Next</button>
+    <button on:click={random} class="next"
+        in:fly={{x: 100, duration: 200, delay: 201}}
+        out:fly={{x: 100, duration: 200}}
+        
+    >Next</button>
     {/if}
     </div>
 <button class="thing" style="background-image: url('{env.PUBLIC_CHOICES_API}/{thing2.replace(" ", "_").toLowerCase()}.png')"
@@ -113,8 +160,11 @@
 >
     <div class="thing-overlay">
         <h1>{thing2}</h1>
-        {#if thing2Percentages}
-            <h2>{thing2Percentages}%</h2>
+        {#if thing2Percentages !== null}
+            <h2
+            in:fly={{duration: 200, y: 50}}
+            out:fly={{duration: 200, y: 50}}
+            >{thing2Percentages}%</h2>
         {/if}
   
     </div>
@@ -134,6 +184,8 @@
         background-size: cover;
         background-position: center;
         position: relative;
+
+        transition: 1s;
     }
     .thing-overlay {
         width: 100%;
@@ -148,11 +200,18 @@
         left: 0;
         color: white;
 
+
     }
 
   .thing-overlay h1 {
         font-size: 3em;
         margin: 0;
+
+        text-align: center;
+       
+        /*crossfade text on change*/
+        transition: 0.5s;
+
   }
   .thing-overlay h2 {
         font-size: 2em;
@@ -190,6 +249,12 @@
         z-index: 1;
         font-weight: bold;
         font-family: 'Arial';
+
+        display: flex;
+  justify-content: space-between;
+
+
+
     }
 
     .thing h2 {

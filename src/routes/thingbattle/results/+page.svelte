@@ -1,8 +1,9 @@
 <script>
     import {env} from "$env/dynamic/public";
 	import { onMount } from "svelte";
-    import {fade} from "svelte/transition";
+    import {fade, fly} from "svelte/transition";
     import {goto} from "$app/navigation";
+	import Page from "../+page.svelte";
     let data = [];
     let out = true;
 async function load(){
@@ -34,10 +35,22 @@ on:click|preventDefault={() => {
     <div 
         style="background-image: url('{env.PUBLIC_CHOICES_API}/{item.thing.replace(" ", "_").toLowerCase()}.png')"
         class="result"
+        on:mouseenter={() => {
+           item.hover = true;
+        }}
+        on:mouseleave={() => {
+            item.hover = false;
+        }}
     >
     <div class="thing-overlay">
         <h2>{item.thing}</h2>
         <p>{item.percentage}%</p>
+        {#if item.hover}
+        <h3 class="hover"
+            in:fly={{duration: 200, y: 40}}
+            out:fly={{duration: 200, y: 40}}
+        >{item.votes} vote(s), {item.games} game(s)</h3>
+        {/if}
         </div>
     </div>
 {/each}</div>
@@ -118,6 +131,12 @@ on:click|preventDefault={() => {
         height: 100%;
         background: black;
         z-index: 100;
+    }
+
+    .hover {
+        font-size: 1.2em;
+        color: white;
+        text-align: center;
     }
   
 </style>
