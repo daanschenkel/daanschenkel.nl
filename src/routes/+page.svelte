@@ -23,39 +23,39 @@
 	let cachedAudios = {};
 	let mouseCursors = [];
 
-	function drawCanvas(){
+	function drawCanvas() {
 		const canvas = document.getElementById('emailCanvas');
-					var ctx = canvas.getContext('2d');
+		var ctx = canvas.getContext('2d');
 
-					//clear canvas
-					ctx.clearRect(0, 0, canvas.width, canvas.height);
+		//clear canvas
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-					var email = 'daan@daanschenkel.nl';
+		var email = 'daan@daanschenkel.nl';
 
-					// Set the font and size
-					ctx.font = '20px Roboto';
+		// Set the font and size
+		ctx.font = '20px Roboto';
 
-					//background
-					ctx.fillStyle = 'white';
+		//background
+		ctx.fillStyle = 'white';
 
-					//nmake background out of random characters in the email, position from top left to bottom right
-					for (let i = 0; i < 200; i++) {
-						ctx.fillText(
-							email[Math.floor(Math.random() * email.length)],
-							Math.random() * canvas.width,
-							Math.random() * canvas.height
-						);
-					}
-					//draw the text big and bold, with each letter in a different color and a black border around it
-					ctx.font = 'bold 20px Roboto';
-					for (let i = 0; i < email.length; i++) {
-						ctx.fillStyle = `hsl(${(Math.random() * 360) | 0}, 100%, 50%)`;
-						ctx.strokeStyle = 'black';
-						ctx.lineWidth = 10;
-						ctx.strokeText(email[i], i * 20, 30);
-						ctx.fillText(email[i], i * 20, 30);
-					}	
-				}
+		//nmake background out of random characters in the email, position from top left to bottom right
+		for (let i = 0; i < 200; i++) {
+			ctx.fillText(
+				email[Math.floor(Math.random() * email.length)],
+				Math.random() * canvas.width,
+				Math.random() * canvas.height
+			);
+		}
+		//draw the text big and bold, with each letter in a different color and a black border around it
+		ctx.font = 'bold 20px Roboto';
+		for (let i = 0; i < email.length; i++) {
+			ctx.fillStyle = `hsl(${(Math.random() * 360) | 0}, 100%, 50%)`;
+			ctx.strokeStyle = 'black';
+			ctx.lineWidth = 10;
+			ctx.strokeText(email[i], i * 20, 30);
+			ctx.fillText(email[i], i * 20, 30);
+		}
+	}
 
 	//page specific code
 	socket.on('connect', () => {
@@ -189,14 +189,11 @@
 		setTimeout(() => {
 			page = newPage;
 			mounted = true;
-			if(newPage == 'choices') goto(`/thingbattle`)
+			if (newPage == 'choices') goto(`/thingbattle`);
 
 			if (newPage === 'contact') {
 				setTimeout(async () => {
-				drawCanvas();
-
-
-
+					drawCanvas();
 				}, 1000);
 			}
 		}, 501);
@@ -295,6 +292,11 @@
 			name: 'Hexi Development',
 			description:
 				"Developed multiple applications & reverse-engineered APIs for Hexi Development.<br/><a href='https://hexidev.nl' target='_blank' class='underline'>Visit the website</a>"
+		},
+		{
+			name: 'LangsteStream.nl',
+			description:
+				"Made an interactive app for Dutch livestreamer <a href='https://twitch.tv/henRYANand'>henRYANand.</a> that i developed for April fools 2024. It allowed users to upload short videos, that would then be processed and placed in a long stream. <br/><a href='https://langstestream.nl' target='_blank' class='underline'>Visit the website</a>"
 		}
 	];
 </script>
@@ -556,19 +558,17 @@
 				duration: 1000
 			}}
 		>
-			<span class="flex items-center">
-				<h1 class="text-5xl font-bold text-white">Sounds</h1></span
-			>
+			<span class="flex items-center"> <h1 class="text-5xl font-bold text-white">Sounds</h1></span>
 
-			<span  class="flex items-center mt-2 gap-2">
+			<span class="flex items-center mt-2 gap-2">
 				<span class="text-white text-3xl text-center">
 					Annoy me by playing sounds on my computer!
 				</span>
 			</span>
-			<span  class="flex items-center mt-2 gap-2">
+			<span class="flex items-center mt-2 gap-2">
 				<div class="flex justify-center items-center flex-col">
 					{#if !socketConnected || sounds.length < 1}
-						<span  class="flex items-center mt-2 gap-2">
+						<span class="flex items-center mt-2 gap-2">
 							<button class="text-white text-center mt-2 text-xl" on:click={() => socket.connect()}>
 								I cant seem to connect to the soundserver. Danny's probably asleep/offline. Click to
 								retry
@@ -577,8 +577,7 @@
 					{/if}
 				</div>
 			</span>
-			<span class="grid grid-cols-3 gap-4 mt-4"
-			>
+			<span class="grid grid-cols-3 gap-4 mt-4">
 				{#each sounds as sound (sound)}
 					<button
 						target="_blank"
@@ -601,7 +600,7 @@
 			/>
 
 			{#if socketConnected && socketUsers > 0}
-				<p class="text-white text-center text-md p-4" >
+				<p class="text-white text-center text-md p-4">
 					There are currently {socketUsers} users connected.
 				</p>
 			{/if}
@@ -630,16 +629,21 @@
 					Only for real humans, no robots allowed!
 				</span>
 			</span>
-			<canvas class="mt-2" width="400" height="50" id="emailCanvas"
+			<canvas
+				class="mt-2"
+				width="400"
+				height="50"
+				id="emailCanvas"
 				in:fade={{ duration: 1000, delay: 1000 }}
 			/>
-			<button class="text-white text-center mt-2 text-md"
+			<button
+				class="text-white text-center mt-2 text-md"
 				on:click={() => {
 					drawCanvas();
 				}}
 				in:fade={{ duration: 1000, delay: 1000 }}
 			>
-			unreadable?
+				unreadable?
 			</button>
 
 			<h2
