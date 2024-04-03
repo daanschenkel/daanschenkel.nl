@@ -297,7 +297,10 @@
 			name: 'LangsteStream.nl',
 			description:
 				"Made an interactive app for Dutch livestreamer <a href='https://twitch.tv/henRYANand'>henRYANand.</a> that i developed for April fools 2024. It allowed users to upload short videos, that would then be processed and placed in a long stream. <br/><a href='https://langstestream.nl' target='_blank' class='underline'>Visit the website</a>"
-		}
+		},
+{
+name: 'CrewHL.nl',
+description: "Made an authorized app integrated with WhatsApp and the user's school schedules, to manage the schools music crew administration. <br/> <a href="https://crewhl.nl" target="_blank" class="underline">Visit the website</a>
 	];
 </script>
 
