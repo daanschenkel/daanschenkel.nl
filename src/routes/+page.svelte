@@ -296,7 +296,11 @@
 		{
 			name: 'LangsteStream.nl',
 			description:
-				"Made an interactive app for Dutch livestreamer <a href='https://twitch.tv/henRYANand'>henRYANand.</a> that i developed for April fools 2024. It allowed users to upload short videos, that would then be processed and placed in a long stream. <br/><a href='https://langstestream.nl' target='_blank' class='underline'>Visit the website</a>"
+				"Made an interactive app for Dutch livestreamer <a href='https://twitch.tv/henRYANand'>henRYANand</a> that i developed for April fools 2024. It allowed users to upload short videos, that would then be processed and placed in a long stream. <br/><a href='https://langstestream.nl' target='_blank' class='underline'>Visit the website</a>"
+		},
+		{
+			name: 'StreamStreaks.com',
+			description: `Developed an app in partnership with twitch streamer <a href="https://twitch.tv/henRYANand">henRYANand</a> that allows users to have streaks in streamers chats, to keep them active and engaged. <br/><a href="https://streamstreaks.com" target="_blank" class="underline">Visit the website</a>`
 		}
 	];
 </script>
