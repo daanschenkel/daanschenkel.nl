@@ -301,6 +301,10 @@
 		{
 			name: 'StreamStreaks.com',
 			description: `Developed an app in partnership with twitch streamer <a href="https://twitch.tv/henRYANand">henRYANand</a> that allows users to have streaks in streamers chats, to keep them active and engaged. <br/><a href="https://streamstreaks.com" target="_blank" class="underline">Visit the website</a>`
+		},
+		{
+			name: 'CrewHL.nl',
+			description: `Made an internal app integrated with WhatsApp and the user's school schedules, to manage the schools music crew administration. <br/> <a href="https://crewhl.nl" target="_blank" class="underline">Visit the website</a>`
 		}
 	];
 </script>
