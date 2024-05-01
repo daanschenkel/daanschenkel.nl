@@ -211,7 +211,7 @@
 		{
 			icon: faGithub,
 			name: 'GitHub',
-			url: 'https://github.com/daanschenkel'
+			url: 'https://github.com/dandanthedev'
 		},
 
 		{
