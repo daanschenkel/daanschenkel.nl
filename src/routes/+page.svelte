@@ -13,12 +13,10 @@
 	let page;
 	let mounted = false;
 	let socket = io(env.PUBLIC_SOUNDS_SOCKET);
-	let stuffSocket;
 	let socketConnected = false;
 	let sounds = [];
 	let socketUsers = 0;
 	let navigated = false;
-	let stuffSocketConnected = false;
 	let devices = [];
 	let cachedAudios = {};
 	let mouseCursors = [];
@@ -79,31 +77,6 @@
 	socket.on('users', (data) => {
 		socketUsers = data;
 	});
-
-	$: if (page == 'stuff') {
-		if (!stuffSocket) {
-			stuffSocket = io(env.PUBLIC_DEVICES_SOCKET);
-			stuffSocket.on('connect', () => {
-				stuffSocketConnected = true;
-			});
-			stuffSocket.on('disconnect', () => {
-				stuffSocketConnected = false;
-			});
-			stuffSocket.on('deviceUpdate', (data) => {
-				let found = false;
-				for (let i = 0; i < devices.length; i++) {
-					if (devices[i].device.id == data.device.id) {
-						found = true;
-						devices[i] = data;
-					}
-				}
-				if (!found) {
-					devices = [...devices, data];
-				}
-			});
-		}
-	}
-
 	onMount(() => {
 		mounted = true;
 		if ($pageStore.url.searchParams.get('page'))
@@ -175,11 +148,6 @@
 			screenY: window.innerHeight,
 			page: newPage
 		});
-
-		if (stuffSocket && newPage !== 'stuff') {
-			stuffSocket.disconnect();
-			stuffSocket = null;
-		}
 
 		page = null;
 		mounted = false;
@@ -381,13 +349,6 @@
 				>
 					Projects
 				</button>
-				<button
-					class="bg-white text-black font-bold py-2 px-4 rounded"
-					on:click={() => switchPage('stuff')}
-					in:fly={{ duration: navigated ? 0 : 500, delay: navigated ? 0 : 3100, x: 50 }}
-				>
-					My Stuff
-				</button>
 
 				<button
 					class="bg-white text-black font-bold py-2 px-4 rounded"
@@ -489,67 +450,6 @@
 			<button
 				class="bg-white text-black font-bold py-2 px-4 rounded mt-2"
 				in:fade={{ duration: 500, delay: 1500 + 200 * projects.length }}
-				on:click={() => switchPage('home')}
-			>
-				Back
-			</button>
-		</div>
-	{/if}
-	{#if page == 'stuff'}
-		<div
-			class="flex justify-center items-center min-h-screen flex-col"
-			out:fade={{
-				duration: 500
-			}}
-			in:fade={{
-				duration: 1000
-			}}
-		>
-			<span in:fade={{ duration: 1000 }} class="flex items-center">
-				<h1 class="text-5xl font-bold text-white">My Stuff</h1></span
-			>
-
-			<span
-				in:fade={{ duration: 1000, delay: 1000 }}
-				class="flex items-center mt-4 gap-2 text-white"
-			>
-				{#if devices.length < 1}
-					<p class="text-center">None of my devices are currently connected.</p>
-				{:else}
-					<div
-						class="flex flex-col items-center justify-center p-2 rounded bg-white text-black w-96"
-					>
-						{#each devices as device}
-							<div
-								class="flex flex-col items-center justify-center p-2 rounded bg-white text-black w-96"
-							>
-								<h2 class="text-center font-bold text-3xl">{device.device.name}</h2>
-								{#if !device.data.offline}
-									<div class="grid grid-cols-2">
-										{#each Object.entries(device.data) as [key, value]}
-											<div class="p-2">
-												<h2 class="text-center font-bold text-xl">{key}</h2>
-												{#if typeof value !== 'object'}
-													<p class="text-center">{value}</p>
-												{:else}
-													{#each Object.entries(value) as [key, value]}
-														<p class="text-center">{key}: {value}</p>
-													{/each}
-												{/if}
-											</div>
-										{/each}
-									</div>
-								{:else}
-									<p class="text-center">Connection to device lost</p>
-								{/if}
-							</div>
-						{/each}
-					</div>
-				{/if}
-			</span>
-			<button
-				class="bg-white text-black font-bold py-2 px-4 rounded mt-2"
-				in:fade={{ duration: 2000, delay: 2000 }}
 				on:click={() => switchPage('home')}
 			>
 				Back
