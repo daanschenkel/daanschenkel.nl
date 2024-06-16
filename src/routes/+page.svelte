@@ -273,6 +273,12 @@
 		{
 			name: 'CrewHL.nl',
 			description: `Made an internal app integrated with WhatsApp and the user's school schedules, to manage the schools music crew administration. <br/> <a href="https://crewhl.nl" target="_blank" class="underline">Visit the website</a>`
+		},
+		{
+			name: 'WikiGame',
+			description: `I like to play games with my friends, and recently discovered Wikipedia speedrun games. I did find them a bit annoying to use though, so i decided to make my own.<br/>
+			<br/>It's simple, just name, code, article, play!<br/>
+			<a href="https://wikigame.daanschenkel.nl" target="_blank" class="underline">Visit the website</a>`
 		}
 	];
 </script>
